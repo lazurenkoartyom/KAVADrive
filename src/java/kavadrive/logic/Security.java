@@ -38,17 +38,17 @@ public class Security {
     @Context
     private HttpServletRequest request;
     
-//    @Context 
-//    private HttpServletResponse response;
+    @Context 
+    private HttpServletResponse response;
 
 //    private Users foundUser = null;
 
-    @GET
-    @Path("login")
-    @Produces(MediaType.APPLICATION_XML)
-    public Response login() {
-        return new Response("Method not allowed.", -1);
-    }
+//    @GET
+//    @Path("login")
+//    @Produces(MediaType.APPLICATION_XML)
+//    public Response login() {
+//        return new Response("Method not allowed.", -1);
+//    }
 
     @GET
     @Path("logout")
@@ -138,8 +138,8 @@ public class Security {
     
     private void setSessionAttribute(Users user){
         Cookie cookie = new Cookie("Token", user.getToken());
-        cookie.setSecure(true);
-//        response.addCookie(cookie);
+//        cookie.setSecure(true);
+        response.addCookie(cookie);
         user.setUserPassword(null);
         UserInfo userInfo = new UserInfo(user);
         HttpSession session = request.getSession();
@@ -210,8 +210,9 @@ public class Security {
     public static String getTokenFromSession(HttpServletRequest request){
         Cookie[] cookies = request.getCookies();
         for(Cookie cookie : cookies) {
-            if ("Token".equals(cookie.getName()))
+            if ("Token".equals(cookie.getName())) {
                 return cookie.getValue();
+            }
         }
         return null;
     }    
