@@ -76,9 +76,9 @@ public class Security {
         
             String token = getTokenFromSession(request);
 
-            if(token != null){
+            if(token != null && !("".equals(token))){
                 return loginByToken(token);
-            }else{
+            } else {
                 return loginByPhoneOrEmail(loggingInClient);
             }
         }catch (ServiceException ex) {
@@ -101,8 +101,10 @@ public class Security {
         Users loggingInUser;
         loggingInUser = UserDAO.findByToken(token);
 
-        if(loggingInUser == null) 
-            return new Response(null, "Not found user with this token", -1);
+        if(loggingInUser == null) {
+            response.addCookie(new Cookie("Token", null));
+            return new Response(null, "Not found user with this token. Try to relogin.", -1);
+        }
         checkTokenExpireAndUpdateToken(loggingInUser);
         setSessionAttribute(loggingInUser);
         return Response.OK;
@@ -139,6 +141,7 @@ public class Security {
     private void setSessionAttribute(Users user){
         Cookie cookie = new Cookie("Token", user.getToken());
 //        cookie.setSecure(true);
+        cookie.setPath("/KAVADrive/webresources");
         response.addCookie(cookie);
         user.setUserPassword(null);
         UserInfo userInfo = new UserInfo(user);
