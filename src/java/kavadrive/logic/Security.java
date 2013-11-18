@@ -138,8 +138,14 @@ public class Security {
         return true;
     }
     
-    private void setSessionAttribute(Users user){
+    private void setSessionAttribute(Users user) throws ServiceException{
         Cookie cookie = new Cookie("Token", user.getToken());
+        int expiry = getCookieMaxAge(user);
+        if(expiry>0){
+            cookie.setMaxAge(expiry);
+        }else{
+            resetSecretCodAndChangeToken(user);
+        }
 //        cookie.setSecure(true);
         cookie.setPath("/KAVADrive/webresources");
         response.addCookie(cookie);
@@ -147,6 +153,13 @@ public class Security {
         UserInfo userInfo = new UserInfo(user);
         HttpSession session = request.getSession();
         session.setAttribute("userInfo", userInfo);
+    }
+    
+    private int getCookieMaxAge(Users user) {
+        long now = new Date().getTime();
+        long tokenCreate = user.getTokenCreate().longValue();
+        int expiry = (int)(tokenCreate-now)/1000;
+        return expiry;
     }
     
     /*************** Login by phone or email ***********/
@@ -161,8 +174,14 @@ public class Security {
         Users foundUser;
         if (phone != null) {
             foundUser = UserDAO.findByPhone(phone);
+            if(foundUser==null) {
+                return new Response(null, "A phone number is wrong.", -1);
+            }
         } else if (email != null) {
             foundUser = UserDAO.findByEMail(email);
+            if(foundUser==null) {
+                return new Response(null, "A e-mail is wrong.", -1);
+            }
        } else {
             //User did not provide phone number or e-mail
             return new Response(null, "You must provide a phone number or e-mail.", -1);
