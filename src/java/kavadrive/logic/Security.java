@@ -22,8 +22,12 @@ import kavadrive.classes.Response;
 import kavadrive.classes.UserInfo;
 import kavadrive.entity.Users;
 import kavadrive.logic.Roles;
+import kavadrive.logic.Roles;
+import kavadrive.logic.ServiceException;
 import kavadrive.logic.ServiceException;
 import kavadrive.logic.TokenFactory;
+import kavadrive.logic.TokenFactory;
+import kavadrive.logic.UserDAO;
 import kavadrive.logic.UserDAO;
 
 /**
@@ -139,13 +143,14 @@ public class Security {
     }
     
     private void setSessionAttribute(Users user) throws ServiceException{
+        int MIN_TOKEN_LIFETIME_SEC = 1800;
         Cookie cookie = new Cookie("Token", user.getToken());
-        int expiry = getCookieMaxAge(user);
-        if(expiry>0){
-            cookie.setMaxAge(expiry);
-        }else{
+        int tokenSecToExpire = getCookieMaxAge(user);
+        if(tokenSecToExpire < MIN_TOKEN_LIFETIME_SEC){
             resetSecretCodAndChangeToken(user);
+            tokenSecToExpire = getCookieMaxAge(user);
         }
+        cookie.setMaxAge(tokenSecToExpire);
 //        cookie.setSecure(true);
         cookie.setPath("/KAVADrive/webresources");
         response.addCookie(cookie);
@@ -156,10 +161,10 @@ public class Security {
     }
     
     private int getCookieMaxAge(Users user) {
-        long now = new Date().getTime();
-        long tokenCreate = user.getTokenCreate().longValue();
-        int expiry = (int)(tokenCreate-now)/1000;
-        return expiry;
+        long currentDateTime = new Date().getTime();
+        long tokenCreateDateTime = user.getTokenCreate().longValue();
+        int tokenSecToExpire = (int)(tokenCreateDateTime - currentDateTime)/1000;
+        return tokenSecToExpire;
     }
     
     /*************** Login by phone or email ***********/
@@ -231,6 +236,9 @@ public class Security {
 
     public static String getTokenFromSession(HttpServletRequest request){
         Cookie[] cookies = request.getCookies();
+        if (cookies == null) {
+            return null;
+        }
         for(Cookie cookie : cookies) {
             if ("Token".equals(cookie.getName())) {
                 return cookie.getValue();

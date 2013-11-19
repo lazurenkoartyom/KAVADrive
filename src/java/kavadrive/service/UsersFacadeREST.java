@@ -84,7 +84,7 @@ public class UsersFacadeREST extends AbstractFacade<Users> {
             if (oldUser.getRoleId() != entity.getRoleId()) {
                if(!Security.checkClientRole(request,ADMINISTRATOR)){
                     entity.setRoleId(oldUser.getRoleId());
-                    return new Response("U are not have enough permissions to change role", -1);
+                    return new Response("U do not have enough permissions to change role", -1);
                 }
             }
 
