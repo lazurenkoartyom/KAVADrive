@@ -7,6 +7,11 @@
     <class>kavadrive.entity.Product</class>
     <class>kavadrive.entity.Store</class>
     <class>kavadrive.entity.Users</class>
+    <class>kavadrive.entity.ProductSetList</class>
+    <class>kavadrive.entity.OrderSimpleItem</class>
+    <class>kavadrive.entity.OrderItem</class>
+    <class>kavadrive.entity.Role</class>
+    <class>kavadrive.entity.ProductItem</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://37.252.125.229:3306/coffee?zeroDateTimeBehavior=convertToNull&amp;useUnicode=true&amp;characterEncoding=utf8"/>

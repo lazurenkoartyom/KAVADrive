@@ -18,68 +18,68 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import kavadrive.classes.Response;
 import kavadrive.classes.Response_List;
-import kavadrive.entity.Category;
+import kavadrive.entity.Role;
 
 /**
  *
  * @author Artyom
  */
 //@javax.ejb.Stateless
-@Path("category")
-public class CategoryFacadeREST extends AbstractFacade<Category> {
+@Path("kavadrive.entity.role")
+public class RoleFacadeREST extends AbstractFacade<Role> {
 //    @PersistenceContext(unitName = "KAVADrivePU")
 //    private EntityManager em;
 
-    public CategoryFacadeREST() {
-        super(Category.class);
+    public RoleFacadeREST() {
+        super(Role.class);
     }
 
     @POST
     @Override
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response create(Category entity) {
+    @Consumes({"application/xml", "application/json"})
+    public Response create(Role entity) {
         return super.create(entity);
     }
 
     @POST
     @Path("update")
     @Override
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response edit(Category entity) {
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response edit(Role entity) {
         return super.edit(entity);
     }
 
     @GET
     @Path("{id}/delete")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-     public Response remove(@PathParam("id") Integer id) {
+    public Response remove(@PathParam("id") Integer id) {
         return super.remove(super.find(id).getEntity());
     }
 
     @GET
     @Path("{id}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({"application/xml", "application/json"})
     public Response find(@PathParam("id") Integer id) {
         return super.find(id);
     }
 
     @GET
     @Override
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response_List<Category> findAll() {
+    @Produces({"application/xml", "application/json"})
+    public Response_List<Role> findAll() {
         return super.findAll();
     }
 
     @GET
     @Path("{from}/{to}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response_List findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
+    @Produces({"application/xml", "application/json"})
+    public Response_List<Role> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
         return super.findRange(new int[]{from, to});
     }
 
     @GET
     @Path("count")
-    @Produces(MediaType.APPLICATION_XML)
+    @Produces("application/xml")
     public String countREST() {
         return String.valueOf(super.count());
     }

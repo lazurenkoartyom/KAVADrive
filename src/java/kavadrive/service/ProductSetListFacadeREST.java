@@ -4,40 +4,35 @@
  */
 package kavadrive.service;
 
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import kavadrive.classes.Response;
 import kavadrive.classes.Response_List;
-import kavadrive.entity.Category;
+import kavadrive.entity.ProductSetList;
 
 /**
  *
  * @author Artyom
  */
 //@javax.ejb.Stateless
-@Path("category")
-public class CategoryFacadeREST extends AbstractFacade<Category> {
+@Path("kavadrive.entity.productsetlist")
+public class ProductSetListFacadeREST extends AbstractFacade<ProductSetList> {
 //    @PersistenceContext(unitName = "KAVADrivePU")
 //    private EntityManager em;
 
-    public CategoryFacadeREST() {
-        super(Category.class);
+    public ProductSetListFacadeREST() {
+        super(ProductSetList.class);
     }
 
     @POST
     @Override
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response create(Category entity) {
+    @Consumes({"application/xml", "application/json"})
+    public Response create(ProductSetList entity) {
         return super.create(entity);
     }
 
@@ -45,7 +40,7 @@ public class CategoryFacadeREST extends AbstractFacade<Category> {
     @Path("update")
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response edit(Category entity) {
+    public Response edit(ProductSetList entity) {
         return super.edit(entity);
     }
 
@@ -66,7 +61,7 @@ public class CategoryFacadeREST extends AbstractFacade<Category> {
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response_List<Category> findAll() {
+    public Response_List<ProductSetList> findAll() {
         return super.findAll();
     }
 
@@ -83,10 +78,5 @@ public class CategoryFacadeREST extends AbstractFacade<Category> {
     public String countREST() {
         return String.valueOf(super.count());
     }
-
-//    @Override
-//    protected EntityManager getEntityManager() {
-//        return em;
-//    }
     
 }
