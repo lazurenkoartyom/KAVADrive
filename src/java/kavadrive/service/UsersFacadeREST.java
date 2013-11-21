@@ -106,7 +106,7 @@ public class UsersFacadeREST extends AbstractFacade<Users> {
     public Response remove(@PathParam("id") Integer id) {
         try {
             if(!Security.checkClientRole(request,ADMINISTRATOR)){
-                 return new Response("U are not have enough permissions", -1);
+                 return new Response("U do not have enough permissions", -1);
              }
             return super.remove(super.find(id).getEntity());
         } catch (Exception ex) {
@@ -120,7 +120,7 @@ public class UsersFacadeREST extends AbstractFacade<Users> {
     public Response<Users> find(@PathParam("id") Integer id) {
         try {
             if(!Security.checkClientRole(request,ADMINISTRATOR)){
-                 return new Response("U are not have enough permissions", -1);
+                 return new Response("U do not have enough permissions", -1);
              }
             return super.find(id);
         } catch (Exception ex) {
