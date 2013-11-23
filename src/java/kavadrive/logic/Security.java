@@ -20,6 +20,7 @@ import javax.servlet.http.Cookie;
 import javax.ws.rs.core.MediaType;
 import kavadrive.classes.Response;
 import kavadrive.classes.UserInfo;
+import kavadrive.entity.Role;
 import kavadrive.entity.Users;
 import kavadrive.logic.Roles;
 import kavadrive.logic.Roles;
@@ -209,7 +210,7 @@ public class Security {
         }
     }
     
-    public static boolean checkClientRole (HttpServletRequest request,Roles... roles) throws ServiceException {
+    public static boolean checkClientRole (HttpServletRequest request, Role... roles) throws ServiceException {
         
         String token = getTokenFromSession(request);
 
@@ -220,14 +221,14 @@ public class Security {
         }
     }
     
-    private static boolean isValidRole(String token,Roles... roles) throws ServiceException{
+    private static boolean isValidRole(String token,Role... roles) throws ServiceException{
         Users client = UserDAO.findByToken(token);
         
         if(client == null) {
             return false;
         }
-        for (Roles role : roles){
-            if(client.getRoleId()==role.getId()){
+        for (Role role : roles){
+            if(client.getRoleId().equals(role)){
                 return true;
             }
         }

@@ -5,12 +5,14 @@
 package kavadrive.entity;
 
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -44,7 +46,10 @@ public class ProductItem implements Serializable {
     @Column(name = "product_quantity")
     private int productQuantity;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "productItemId")
-    private Collection<ProductSetList> productSetListCollection;
+    private List<ProductSetList> productSetListList;
+    @JoinColumn(name = "product_id", referencedColumnName = "product_id")
+    @ManyToOne(optional = false)
+    private Product productId;
 
     public ProductItem() {
     }
@@ -85,12 +90,20 @@ public class ProductItem implements Serializable {
 
     @XmlTransient
     @JsonIgnore
-    public Collection<ProductSetList> getProductSetListCollection() {
-        return productSetListCollection;
+    public List<ProductSetList> getProductSetListList() {
+        return productSetListList;
     }
 
-    public void setProductSetListCollection(Collection<ProductSetList> productSetListCollection) {
-        this.productSetListCollection = productSetListCollection;
+    public void setProductSetListList(List<ProductSetList> productSetListList) {
+        this.productSetListList = productSetListList;
+    }
+
+    public Product getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Product productId) {
+        this.productId = productId;
     }
 
     @Override

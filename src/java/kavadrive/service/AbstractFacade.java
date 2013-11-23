@@ -37,7 +37,7 @@ public abstract class AbstractFacade<T> {
             et.begin();
             em.persist(entity);
             et.commit();
-            return new Response("User added.", 0);
+            return Response.OK;
         } catch (Exception e) {
             if ((et != null) && et.isActive()) {
                 et.rollback();
@@ -164,7 +164,7 @@ public abstract class AbstractFacade<T> {
         }
     }
 
-    public int count() {
+    public Response count() {
         EntityManager em = null;
         try { 
             em = getEntityManager();
@@ -174,7 +174,7 @@ public abstract class AbstractFacade<T> {
             javax.persistence.Query q = em.createQuery(cq);
             int count;
             count = ((Long) q.getSingleResult()).intValue();
-            return count;
+            return new Response(count, "OK", 0);
 //        } catch (Exception e) {
 //            return new Response(null, e.getMessage(), -1);
         } finally {

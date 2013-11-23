@@ -6,14 +6,16 @@ package kavadrive.entity;
 
 import java.io.Serializable;
 import java.math.BigInteger;
-import java.util.Collection;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -50,9 +52,6 @@ public class Users implements Serializable {
     @Column(name = "user_id")
     private Integer userId;
     @Basic(optional = false)
-    @Column(name = "role_id")
-    private Integer roleId;
-    @Basic(optional = false)
     @Column(name = "user_name")
     private String userName;
     @Column(name = "user_SIF")
@@ -77,8 +76,11 @@ public class Users implements Serializable {
     private String token;
     @Column(name = "token_create")
     private BigInteger tokenCreate;
+    @JoinColumn(name = "role_id", referencedColumnName = "role_id")
+    @ManyToOne(optional = false)
+    private Role roleId;
     @OneToMany(mappedBy = "userId")
-    private Collection<Orders> ordersCollection;
+    private List<Orders> ordersList;
 
     public Users() {
     }
@@ -99,14 +101,6 @@ public class Users implements Serializable {
 
     public void setUserId(Integer userId) {
         this.userId = userId;
-    }
-
-    public Integer getRoleId() {
-        return roleId;
-    }
-
-    public void setRoleId(Integer roleId) {
-        this.roleId = roleId;
     }
 
     public String getUserName() {
@@ -197,14 +191,22 @@ public class Users implements Serializable {
         this.tokenCreate = tokenCreate;
     }
 
-    @XmlTransient
-    @JsonIgnore
-    public Collection<Orders> getOrdersCollection() {
-        return ordersCollection;
+    public Role getRoleId() {
+        return roleId;
     }
 
-    public void setOrdersCollection(Collection<Orders> ordersCollection) {
-        this.ordersCollection = ordersCollection;
+    public void setRoleId(Role roleId) {
+        this.roleId = roleId;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public List<Orders> getOrdersList() {
+        return ordersList;
+    }
+
+    public void setOrdersList(List<Orders> ordersList) {
+        this.ordersList = ordersList;
     }
 
     @Override
@@ -229,7 +231,7 @@ public class Users implements Serializable {
 
     @Override
     public String toString() {
-        return "kavadrive.classes.Users[ userId=" + userId + " ]";
+        return "kavadrive.entity.Users[ userId=" + userId + " ]";
     }
     
 }

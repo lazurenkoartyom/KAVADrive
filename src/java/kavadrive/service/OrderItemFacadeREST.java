@@ -73,8 +73,8 @@ public class OrderItemFacadeREST extends AbstractFacade<OrderItem> {
     @GET
     @Path("count")
     @Produces("text/plain")
-    public String countREST() {
-        return String.valueOf(super.count());
+    public Response countREST() {
+        return super.count();
     }
 
 //    @Override

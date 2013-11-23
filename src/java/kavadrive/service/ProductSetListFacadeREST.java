@@ -75,8 +75,8 @@ public class ProductSetListFacadeREST extends AbstractFacade<ProductSetList> {
     @GET
     @Path("count")
     @Produces(MediaType.APPLICATION_XML)
-    public String countREST() {
-        return String.valueOf(super.count());
+    public Response countREST() {
+        return super.count();
     }
     
 }

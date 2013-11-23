@@ -80,8 +80,8 @@ public class CategoryFacadeREST extends AbstractFacade<Category> {
     @GET
     @Path("count")
     @Produces(MediaType.APPLICATION_XML)
-    public String countREST() {
-        return String.valueOf(super.count());
+    public Response countREST() {
+        return super.count();
     }
 
 //    @Override

@@ -80,8 +80,8 @@ public class ProductItemFacadeREST extends AbstractFacade<ProductItem> {
     @GET
     @Path("count")
     @Produces("application/xml")
-    public String countREST() {
-        return String.valueOf(super.count());
+    public Response countREST() {
+        return super.count();
     }
 
 //    @Override

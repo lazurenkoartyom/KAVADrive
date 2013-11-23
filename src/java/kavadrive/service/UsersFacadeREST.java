@@ -17,6 +17,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import kavadrive.classes.Response;
 import kavadrive.classes.Response_List;
+import kavadrive.entity.Role;
 import kavadrive.entity.Users;
 import kavadrive.logic.Roles;
 import static kavadrive.logic.Roles.*;
@@ -29,6 +30,9 @@ import kavadrive.logic.UserDAO;
 //@javax.ejb.Stateless
 @Path("users")
 public class UsersFacadeREST extends AbstractFacade<Users> {
+    static Role ADMINISTRATOR = new Role(1);
+    static Role MANAGER = new Role(2);
+    static Role USER = new Role(3);
 
     @Context
     HttpServletRequest request;
@@ -42,7 +46,7 @@ public class UsersFacadeREST extends AbstractFacade<Users> {
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response create(Users entity) {
         try {
-            Integer role = Roles.USER.getId();
+            Role role = USER;
             entity.setRoleId(role);
             boolean correctEntity = (entity.getUserName() != null) 
                     &&  (entity.getUserPassword() != null)
@@ -148,7 +152,7 @@ public class UsersFacadeREST extends AbstractFacade<Users> {
     public Response_List<Users> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
         try {
             if(!Security.checkClientRole(request,ADMINISTRATOR)){
-                 return new Response_List("U are not have enough permissions", -1);
+                 return new Response_List("U do not have enough permissions", -1);
              }
             return super.findRange(new int[]{from, to});
         } catch (Exception ex) {
@@ -159,8 +163,8 @@ public class UsersFacadeREST extends AbstractFacade<Users> {
     @GET
     @Path("count")
     @Produces(MediaType.APPLICATION_XML)
-    public String countREST() {
-        return String.valueOf(super.count());
+    public Response countREST() {
+        return super.count();
     }
 
     private int generateSecurityCode() {
