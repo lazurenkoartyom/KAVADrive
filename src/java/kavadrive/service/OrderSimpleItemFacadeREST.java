@@ -11,7 +11,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import kavadrive.classes.Response;
-import kavadrive.classes.Response_List;
 import kavadrive.entity.OrderSimpleItem;
 
 /**
@@ -59,14 +58,14 @@ public class OrderSimpleItemFacadeREST extends AbstractFacade<OrderSimpleItem> {
     @GET
     @Override
     @Produces({"application/xml", "application/json"})
-    public Response_List<OrderSimpleItem> findAll() {
+    public Response<OrderSimpleItem> findAll() {
         return super.findAll();
     }
 
     @GET
     @Path("{from}/{to}")
     @Produces({"application/xml", "application/json"})
-    public Response_List<OrderSimpleItem> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
+    public Response<OrderSimpleItem> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
         return super.findRange(new int[]{from, to});
     }
 

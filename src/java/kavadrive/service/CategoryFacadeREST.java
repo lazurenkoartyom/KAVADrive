@@ -4,20 +4,14 @@
  */
 package kavadrive.service;
 
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import kavadrive.classes.Response;
-import kavadrive.classes.Response_List;
 import kavadrive.entity.Category;
 
 /**
@@ -66,14 +60,14 @@ public class CategoryFacadeREST extends AbstractFacade<Category> {
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response_List<Category> findAll() {
+    public Response findAll() {
         return super.findAll();
     }
 
     @GET
     @Path("{from}/{to}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response_List findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
+    public Response findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
         return super.findRange(new int[]{from, to});
     }
 

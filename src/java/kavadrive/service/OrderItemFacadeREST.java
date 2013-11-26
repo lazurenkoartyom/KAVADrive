@@ -10,8 +10,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import kavadrive.classes.Response;
-import kavadrive.classes.Response_List;
 import kavadrive.entity.OrderItem;
 
 /**
@@ -59,20 +59,20 @@ public class OrderItemFacadeREST extends AbstractFacade<OrderItem> {
     @GET
     @Override
     @Produces({"application/xml", "application/json"})
-    public Response_List findAll() {
+    public Response findAll() {
         return super.findAll();
     }
 
     @GET
     @Path("{from}/{to}")
     @Produces({"application/xml", "application/json"})
-    public Response_List findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
+    public Response findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
         return super.findRange(new int[]{from, to});
     }
 
     @GET
     @Path("count")
-    @Produces("text/plain")
+    @Produces(MediaType.APPLICATION_XML)
     public Response countREST() {
         return super.count();
     }

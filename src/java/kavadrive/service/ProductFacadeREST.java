@@ -12,7 +12,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import kavadrive.classes.Response;
-import kavadrive.classes.Response_List;
 import kavadrive.entity.Product;
 
 /**
@@ -60,20 +59,20 @@ public class ProductFacadeREST extends AbstractFacade<Product> {
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response_List<Product> findAll() {
+    public Response<Product> findAll() {
         return super.findAll();
     }
 
     @GET
     @Path("{from}/{to}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response_List<Product> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
+    public Response<Product> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
         return super.findRange(new int[]{from, to});
     }
 
     @GET
     @Path("count")
-    @Produces("text/plain")
+    @Produces(MediaType.APPLICATION_XML)
     public Response countREST() {
         return super.count();
     }

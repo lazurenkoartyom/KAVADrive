@@ -17,8 +17,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 import kavadrive.entity.Category;
+import kavadrive.entity.OrderItem;
+import kavadrive.entity.OrderSimpleItem;
 import kavadrive.entity.Orders;
 import kavadrive.entity.Product;
+import kavadrive.entity.ProductItem;
+import kavadrive.entity.ProductSetList;
+import kavadrive.entity.Role;
 import kavadrive.entity.Store;
 import kavadrive.entity.Users;
 
@@ -36,7 +41,7 @@ import kavadrive.entity.Users;
     Category.class
 })
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = {"entity", "errorMessage", "errorCode"})
+@XmlType(propOrder = {"entity", "entityList", "errorMessage", "errorCode"})
 
 public class Response<T> implements Serializable {
 
@@ -44,8 +49,36 @@ public class Response<T> implements Serializable {
     private String errorMessage;
     @XmlElement(name="errorCode")
     private int errorCode;
-    @XmlElement(name="entity")
+    @XmlElements({
+        @XmlElement(name="Category",        type = Category.class),
+        @XmlElement(name="OrderItem",       type = OrderItem.class),
+        @XmlElement(name="OrderSimpleItem", type = OrderSimpleItem.class),
+        @XmlElement(name="Orders",          type = Orders.class),
+        @XmlElement(name="Product",         type = Product.class),
+        @XmlElement(name="ProductItem",     type = ProductItem.class),
+        @XmlElement(name="ProductSetList",  type = ProductSetList.class),
+        @XmlElement(name="Role",            type = Role.class),
+        @XmlElement(name="Store",           type = Store.class),
+        @XmlElement(name="Users",           type = Users.class),
+    })
     private T entity ;
+    
+    @XmlElementWrapper(name = "entityList") 
+//    @XmlElement(name="entity")
+    @XmlElements({
+        @XmlElement(name="Category",        type = Category.class),
+        @XmlElement(name="OrderItem",       type = OrderItem.class),
+        @XmlElement(name="OrderSimpleItem", type = OrderSimpleItem.class),
+        @XmlElement(name="Orders",          type = Orders.class),
+        @XmlElement(name="Product",         type = Product.class),
+        @XmlElement(name="ProductItem",     type = ProductItem.class),
+        @XmlElement(name="ProductSetList",  type = ProductSetList.class),
+        @XmlElement(name="Role",            type = Role.class),
+        @XmlElement(name="Store",           type = Store.class),
+        @XmlElement(name="Users",           type = Users.class),
+    })
+    private List<T> entityList ;
+
 
     static public final Response OK = new Response("OK", 0);
     static public final Response EMPTY = new Response("No result for your request.", -1);
@@ -67,6 +100,11 @@ public class Response<T> implements Serializable {
     
     public Response(T entity, String errorMessage, int errorCode) {
         this.entity = entity;
+        this.errorMessage = errorMessage;
+        this.errorCode = errorCode;
+    }
+    public Response(List<T> entity, String errorMessage, int errorCode) {
+        this.entityList = entity;
         this.errorMessage = errorMessage;
         this.errorCode = errorCode;
     }

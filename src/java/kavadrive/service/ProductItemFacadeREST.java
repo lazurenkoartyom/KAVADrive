@@ -4,20 +4,14 @@
  */
 package kavadrive.service;
 
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import kavadrive.classes.Response;
-import kavadrive.classes.Response_List;
 import kavadrive.entity.ProductItem;
 
 /**
@@ -66,20 +60,20 @@ public class ProductItemFacadeREST extends AbstractFacade<ProductItem> {
     @GET
     @Override
     @Produces({"application/xml", "application/json"})
-    public Response_List<ProductItem> findAll() {
+    public Response<ProductItem> findAll() {
         return super.findAll();
     }
 
     @GET
     @Path("{from}/{to}")
     @Produces({"application/xml", "application/json"})
-    public Response_List<ProductItem> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
+    public Response<ProductItem> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
         return super.findRange(new int[]{from, to});
     }
 
     @GET
     @Path("count")
-    @Produces("application/xml")
+    @Produces(MediaType.APPLICATION_XML)
     public Response countREST() {
         return super.count();
     }

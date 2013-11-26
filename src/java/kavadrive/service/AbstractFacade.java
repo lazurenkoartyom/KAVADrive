@@ -10,7 +10,6 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import kavadrive.classes.Response;
-import kavadrive.classes.Response_List;
 
 /**
  *
@@ -28,7 +27,7 @@ public abstract class AbstractFacade<T> {
         return emf.createEntityManager();
     }
     
-    public Response create(T entity) {
+    public Response<T> create(T entity) {
         EntityManager em = null;
         EntityTransaction et = null;
         try {
@@ -100,7 +99,7 @@ public abstract class AbstractFacade<T> {
             em = getEntityManager();
             T found;
             found = em.find(entityClass, id);
-            Response<T> resp = 
+            Response resp = 
                     found == null 
                     ? new Response<T>("Object not found in DB", -1) 
                     : new Response<T>(found, "OK", 0);
@@ -114,7 +113,7 @@ public abstract class AbstractFacade<T> {
         }
     }
 
-    public Response_List<T> findAll() {
+    public Response findAll() {
         EntityManager em = null;
         try { 
             em = getEntityManager();
@@ -122,13 +121,13 @@ public abstract class AbstractFacade<T> {
             cq.select(cq.from(entityClass));
             List<T> found;
             found = em.createQuery(cq).getResultList();
-            Response_List<T> resp = 
+            Response resp = 
                     found.isEmpty()
-                    ? new Response_List<T>("No object found in DB", -1) 
-                    : new Response_List<T>(found, "OK", 0);
+                    ? new Response<T>("No object found in DB", -1) 
+                    : new Response<T>(found, "OK", 0);
             return resp;
         } catch (Exception e) {
-            return new Response_List(null, e.getMessage(), -1);
+            return new Response(null, e.getMessage(), -1);
         } finally {
             if ((em != null) && em.isOpen()) {
                 em.close();
@@ -136,9 +135,9 @@ public abstract class AbstractFacade<T> {
         }
     }
 
-    public Response_List<T> findRange(int[] range) {
+    public Response<T> findRange(int[] range) {
 //       if ((range[0] < 0) || (range[0] > count()) || (range[0] > range[1]) || (range[1] < 1) || (range[1] > count())) {
-//            return new Response_List(null, "Wrong range.", -1);
+//            return new Response(null, "Wrong range.", -1);
 //        }
         EntityManager em = null;
         try { 
@@ -150,13 +149,13 @@ public abstract class AbstractFacade<T> {
             q.setFirstResult(range[0]);
             List<T> found;
             found = q.getResultList();
-            Response_List<T> resp = 
+            Response resp = 
                     found.isEmpty()
-                    ? new Response_List<T>("No object found in DB", -1) 
-                    : new Response_List<T>(found, "OK", 0);
+                    ? new Response("No object found in DB", -1) 
+                    : new Response(found, "OK", 0);
             return resp;
         } catch (Exception e) {
-            return new Response_List(null, e.getMessage(), -1);
+            return new Response(null, e.getMessage(), -1);
         } finally {
             if ((em != null) && em.isOpen()) {
                 em.close();

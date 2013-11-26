@@ -107,7 +107,9 @@ public class Security {
         loggingInUser = UserDAO.findByToken(token);
 
         if(loggingInUser == null) {
-            response.addCookie(new Cookie("Token", null));
+            Cookie cookie = new Cookie("Token", "");
+            cookie.setPath("/KAVADrive/webresources");
+            response.addCookie(cookie);
             return new Response(null, "Not found user with this token. Try to relogin.", -1);
         }
         checkTokenExpireAndUpdateToken(loggingInUser);
@@ -246,5 +248,22 @@ public class Security {
             }
         }
         return null;
-    }    
+    }
+    
+    private void setCookie (Cookie cook) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null) {
+            response.addCookie(cook);
+            return;
+        }
+        for(int i = 0; i < cookies.length; i++) {
+            if ("Token".equals(cookies[i].getName())) {
+                cookies[i].setValue(cook.getValue());
+                cookies[i].setPath(cook.getPath());
+//                response.addCookie(cook);
+                return;
+            }
+        }
+        response.addCookie(cook);
+    }
 }

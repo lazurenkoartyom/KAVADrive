@@ -16,7 +16,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import kavadrive.classes.Response;
-import kavadrive.classes.Response_List;
 import kavadrive.entity.Role;
 import kavadrive.entity.Users;
 import kavadrive.logic.Roles;
@@ -135,28 +134,28 @@ public class UsersFacadeREST extends AbstractFacade<Users> {
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response_List<Users> findAll() {
+    public Response<Users> findAll() {
         try {
             if(!Security.checkClientRole(request,ADMINISTRATOR)){
-                 return new Response_List("U are not have enough permissions", -1);
+                 return new Response("U do not have enough permissions", -1);
              }
             return super.findAll();
         } catch (Exception ex) {
-            return new Response_List(ex.getMessage(), -1);
+            return new Response(ex.getMessage(), -1);
         }
     }
 
     @GET
     @Path("{from}/{to}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response_List<Users> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
+    public Response<Users> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
         try {
             if(!Security.checkClientRole(request,ADMINISTRATOR)){
-                 return new Response_List("U do not have enough permissions", -1);
+                 return new Response("U do not have enough permissions", -1);
              }
             return super.findRange(new int[]{from, to});
         } catch (Exception ex) {
-            return new Response_List(ex.getMessage(), -1);
+            return new Response(ex.getMessage(), -1);
         }
     }
 
