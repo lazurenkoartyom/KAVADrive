@@ -20,7 +20,7 @@ import kavadrive.entity.Store;
  */
 //@javax.ejb.Stateless
 @Path("store")
-public class StoreFacadeREST extends AbstractFacade<Store> {
+public class StoreFacadeREST extends AbstractFacade {
 //    @PersistenceContext(unitName = "KAVADrivePU")
 //    private EntityManager em;
 
@@ -31,7 +31,7 @@ public class StoreFacadeREST extends AbstractFacade<Store> {
     @POST
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response create(Store entity) {
+    public <Store> Response create(Store entity) {
         return super.create(entity);
     }
 
@@ -39,7 +39,7 @@ public class StoreFacadeREST extends AbstractFacade<Store> {
     @Path("update")
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response edit(Store entity) {
+    public <Store> Response edit(Store entity) {
         return super.edit(entity);
     }
 
@@ -52,21 +52,21 @@ public class StoreFacadeREST extends AbstractFacade<Store> {
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response<Store> find(@PathParam("id") Integer id) {
+    public Response find(@PathParam("id") Integer id) {
         return super.find(id);
     }
 
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response<Store> findAll() {
+    public Response findAll() {
         return super.findAll();
     }
 
     @GET
     @Path("{from}/{to}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response<Store> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
+    public Response findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
         return super.findRange(new int[]{from, to});
     }
 

@@ -18,8 +18,6 @@ import javax.ws.rs.core.MediaType;
 import kavadrive.classes.Response;
 import kavadrive.entity.Role;
 import kavadrive.entity.Users;
-import kavadrive.logic.Roles;
-import static kavadrive.logic.Roles.*;
 import kavadrive.logic.UserDAO;
 
 /**
@@ -28,7 +26,7 @@ import kavadrive.logic.UserDAO;
  */
 //@javax.ejb.Stateless
 @Path("users")
-public class UsersFacadeREST extends AbstractFacade<Users> {
+public class UsersFacadeREST extends AbstractFacade {
     static Role ADMINISTRATOR = new Role(1);
     static Role MANAGER = new Role(2);
     static Role USER = new Role(3);
@@ -41,7 +39,7 @@ public class UsersFacadeREST extends AbstractFacade<Users> {
     }
 
     @POST
-    @Override
+    //@Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response create(Users entity) {
         try {
@@ -65,7 +63,7 @@ public class UsersFacadeREST extends AbstractFacade<Users> {
 
     @POST
     @Path("update")
-    @Override
+    //@Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response edit(Users entity) {
         try {
@@ -120,7 +118,7 @@ public class UsersFacadeREST extends AbstractFacade<Users> {
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response<Users> find(@PathParam("id") Integer id) {
+    public Response find(@PathParam("id") Integer id) {
         try {
             if(!Security.checkClientRole(request,ADMINISTRATOR)){
                  return new Response("U do not have enough permissions", -1);
@@ -134,7 +132,7 @@ public class UsersFacadeREST extends AbstractFacade<Users> {
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response<Users> findAll() {
+    public Response findAll() {
         try {
             if(!Security.checkClientRole(request,ADMINISTRATOR)){
                  return new Response("U do not have enough permissions", -1);
@@ -148,7 +146,7 @@ public class UsersFacadeREST extends AbstractFacade<Users> {
     @GET
     @Path("{from}/{to}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response<Users> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
+    public Response findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
         try {
             if(!Security.checkClientRole(request,ADMINISTRATOR)){
                  return new Response("U do not have enough permissions", -1);

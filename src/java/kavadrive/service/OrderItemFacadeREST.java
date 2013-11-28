@@ -4,6 +4,8 @@
  */
 package kavadrive.service;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -12,7 +14,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import kavadrive.classes.Response;
+import kavadrive.dao.OrdersDAO;
 import kavadrive.entity.OrderItem;
+import kavadrive.entity.Users;
+import kavadrive.logic.ServiceException;
 
 /**
  *
@@ -20,7 +25,7 @@ import kavadrive.entity.OrderItem;
  */
 //@javax.ejb.Stateless
 @Path("orderitem")
-public class OrderItemFacadeREST extends AbstractFacade<OrderItem> {
+public class OrderItemFacadeREST extends AbstractFacade {
 //    @PersistenceContext(unitName = "KAVADrivePU")
 //    private EntityManager em;
 
@@ -31,7 +36,7 @@ public class OrderItemFacadeREST extends AbstractFacade<OrderItem> {
     @POST
     @Override
     @Consumes({"application/xml", "application/json"})
-    public Response create(OrderItem entity) {
+    public <OrderItem> Response create(OrderItem entity) {
         return super.create(entity);
     }
 
@@ -39,7 +44,7 @@ public class OrderItemFacadeREST extends AbstractFacade<OrderItem> {
     @Path("update")
     @Override
     @Consumes({"application/xml", "application/json"})
-    public Response edit(OrderItem entity) {
+    public <OrderItem> Response edit(OrderItem entity) {
         return super.edit(entity);
     }
 
@@ -53,6 +58,14 @@ public class OrderItemFacadeREST extends AbstractFacade<OrderItem> {
     @Path("{id}")
     @Produces({"application/xml", "application/json"})
     public Response find(@PathParam("id") Integer id) {
+        try {
+            Users user = new Users();
+            OrdersDAO.find(id);
+            OrdersDAO.findByParameter(OrdersDAO.Parameters.USER, user);
+        } catch (ServiceException ex) {
+            Logger.getLogger(OrderItemFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    
         return super.find(id);
     }
 

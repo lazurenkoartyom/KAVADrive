@@ -15,11 +15,11 @@ import kavadrive.classes.Response;
  *
  * @author Artyom
  */
-public abstract class AbstractFacade<T> {
+public abstract class AbstractFacade {
     final static private EntityManagerFactory emf = Persistence.createEntityManagerFactory("KAVADrivePU");
-    private Class<T> entityClass;
+    private Class entityClass;
 
-    public AbstractFacade(Class<T> entityClass) {
+    public <T> AbstractFacade(Class<T> entityClass) {
         this.entityClass = entityClass;
     }
 
@@ -27,7 +27,7 @@ public abstract class AbstractFacade<T> {
         return emf.createEntityManager();
     }
     
-    public Response<T> create(T entity) {
+    public <T> Response create(T entity) {
         EntityManager em = null;
         EntityTransaction et = null;
         try {
@@ -49,7 +49,7 @@ public abstract class AbstractFacade<T> {
         }
     }
 
-    public Response edit(T entity) {
+    public <T>  Response edit(T entity) {
         EntityManager em = null;
         EntityTransaction et = null;
         try {
@@ -71,7 +71,7 @@ public abstract class AbstractFacade<T> {
         }
     }
 
-    public Response remove(T entity) {
+    public <T>  Response remove(T entity) {
         EntityManager em = null;
         EntityTransaction et = null;
         try {
@@ -93,12 +93,12 @@ public abstract class AbstractFacade<T> {
         }
     }
 
-    public Response<T> find(Object id) {
+    public  <T> Response find(Object id) {
         EntityManager em = null;
         try {            
             em = getEntityManager();
             T found;
-            found = em.find(entityClass, id);
+            found = (T)em.find(entityClass, id);
             Response resp = 
                     found == null 
                     ? new Response<T>("Object not found in DB", -1) 
@@ -113,7 +113,7 @@ public abstract class AbstractFacade<T> {
         }
     }
 
-    public Response findAll() {
+    public <T>  Response findAll() {
         EntityManager em = null;
         try { 
             em = getEntityManager();
@@ -135,7 +135,7 @@ public abstract class AbstractFacade<T> {
         }
     }
 
-    public Response<T> findRange(int[] range) {
+    public <T>  Response findRange(int[] range) {
 //       if ((range[0] < 0) || (range[0] > count()) || (range[0] > range[1]) || (range[1] < 1) || (range[1] > count())) {
 //            return new Response(null, "Wrong range.", -1);
 //        }
@@ -163,7 +163,7 @@ public abstract class AbstractFacade<T> {
         }
     }
 
-    public Response count() {
+    public  <T> Response count() {
         EntityManager em = null;
         try { 
             em = getEntityManager();
@@ -182,4 +182,24 @@ public abstract class AbstractFacade<T> {
             }
         }
     }
+    
+    protected Response createMessage(){
+        return Response.OK;
+    }
+    
+    protected Response createMessage(String errorMessage){
+        return new Response(errorMessage, -1);
+    }
+    
+    protected <T> Response createMessage(List<T> entityList){
+         return entityList.isEmpty()
+                    ? new Response("No object found in DB", -1) 
+                    : new Response(entityList, "OK", 0);
+    }
+    
+    protected  <T,E> Response createMessage(T entity, List<E> entityList){
+        return entityList.isEmpty()
+                    ? new Response(entity,null,"OK",0) 
+                    : new Response(entity,entityList, "OK", 0);
+     }
 }

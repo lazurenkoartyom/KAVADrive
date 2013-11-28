@@ -22,14 +22,6 @@ import kavadrive.classes.Response;
 import kavadrive.classes.UserInfo;
 import kavadrive.entity.Role;
 import kavadrive.entity.Users;
-import kavadrive.logic.Roles;
-import kavadrive.logic.Roles;
-import kavadrive.logic.ServiceException;
-import kavadrive.logic.ServiceException;
-import kavadrive.logic.TokenFactory;
-import kavadrive.logic.TokenFactory;
-import kavadrive.logic.UserDAO;
-import kavadrive.logic.UserDAO;
 
 /**
  *
@@ -38,7 +30,7 @@ import kavadrive.logic.UserDAO;
 @Path("security")
 public class Security {
     
-    private static final long TOKEN_EXPIRE_PERIOD = 2592000L; //milliseconds for 30 days
+    private static final long TOKEN_EXPIRE_PERIOD = 2592000000L; //milliseconds for 30 days
 
     @Context
     private HttpServletRequest request;
@@ -46,14 +38,11 @@ public class Security {
     @Context 
     private HttpServletResponse response;
 
-//    private Users foundUser = null;
-
-//    @GET
-//    @Path("login")
-//    @Produces(MediaType.APPLICATION_XML)
-//    public Response login() {
-//        return new Response("Method not allowed.", -1);
-//    }
+    @GET
+    @Produces(MediaType.APPLICATION_XML)
+    public Response log(){
+        return logout();
+    }
 
     @GET
     @Path("logout")
@@ -61,7 +50,7 @@ public class Security {
     public Response logout(){
         try {
             HttpSession session = request.getSession();
-            session.setAttribute("userInfo", null);
+            session.invalidate();//setAttribute("userInfo", null);
             return Response.OK;
         } catch (Exception ex) {
             //There is no UserInfo in current session
@@ -94,11 +83,7 @@ public class Security {
     private boolean isClientLoggedIn(){
         HttpSession session = request.getSession();
         UserInfo userFromSession = (UserInfo)session.getAttribute("userInfo");
-        if(userFromSession != null) {
-            return true;
-        }else{
-            return false;
-        }
+        return userFromSession != null;
     }
     
     /************* Login by token ****************/
@@ -108,13 +93,14 @@ public class Security {
 
         if(loggingInUser == null) {
             Cookie cookie = new Cookie("Token", "");
-            cookie.setPath("/KAVADrive/webresources");
+            cookie.setPath("/KAVADrive/webresources/");
             response.addCookie(cookie);
             return new Response(null, "Not found user with this token. Try to relogin.", -1);
         }
         checkTokenExpireAndUpdateToken(loggingInUser);
         setSessionAttribute(loggingInUser);
-        return Response.OK;
+        loggingInUser.setUserPassword(null);
+        return new Response(loggingInUser, "OK", 0);
     }
 
     private void checkTokenExpireAndUpdateToken(Users user) throws ServiceException{
@@ -140,22 +126,19 @@ public class Security {
     
     private boolean isExistingInDataBase(Users user, String token) throws ServiceException {
         user = UserDAO.findByToken(token);
-
-        if (user == null){ return false; }
-        return true;
+        return user != null;
     }
     
     private void setSessionAttribute(Users user) throws ServiceException{
-        int MIN_TOKEN_LIFETIME_SEC = 1800;
+//        int MIN_TOKEN_LIFETIME_SEC = 1800;
         Cookie cookie = new Cookie("Token", user.getToken());
         int tokenSecToExpire = getCookieMaxAge(user);
-        if(tokenSecToExpire < MIN_TOKEN_LIFETIME_SEC){
-            resetSecretCodAndChangeToken(user);
-            tokenSecToExpire = getCookieMaxAge(user);
-        }
+//        if(tokenSecToExpire < MIN_TOKEN_LIFETIME_SEC){
+//            resetSecretCodAndChangeToken(user);
+//            tokenSecToExpire = getCookieMaxAge(user);
+//        }
         cookie.setMaxAge(tokenSecToExpire);
-//        cookie.setSecure(true);
-        cookie.setPath("/KAVADrive/webresources");
+        cookie.setPath("/KAVADrive/webresources/");
         response.addCookie(cookie);
         user.setUserPassword(null);
         UserInfo userInfo = new UserInfo(user);
@@ -166,7 +149,7 @@ public class Security {
     private int getCookieMaxAge(Users user) {
         long currentDateTime = new Date().getTime();
         long tokenCreateDateTime = user.getTokenCreate().longValue();
-        int tokenSecToExpire = (int)(tokenCreateDateTime - currentDateTime)/1000;
+        int tokenSecToExpire = (int)((tokenCreateDateTime - currentDateTime)/1000);
         return tokenSecToExpire;
     }
     
@@ -206,7 +189,8 @@ public class Security {
                 || foundUser.getSecretCod().equals(secretCode)) {
             resetSecretCodAndChangeToken(foundUser);
             setSessionAttribute(foundUser);
-            return Response.OK;
+            foundUser.setUserPassword(null);
+            return new Response(foundUser, "OK", 0);
         }else{
             return new Response(null, "Wrong registration code.", -1);
         }
@@ -248,22 +232,5 @@ public class Security {
             }
         }
         return null;
-    }
-    
-    private void setCookie (Cookie cook) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies == null) {
-            response.addCookie(cook);
-            return;
-        }
-        for(int i = 0; i < cookies.length; i++) {
-            if ("Token".equals(cookies[i].getName())) {
-                cookies[i].setValue(cook.getValue());
-                cookies[i].setPath(cook.getPath());
-//                response.addCookie(cook);
-                return;
-            }
-        }
-        response.addCookie(cook);
     }
 }

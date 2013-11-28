@@ -20,7 +20,7 @@ import kavadrive.entity.ProductItem;
  */
 //@javax.ejb.Stateless
 @Path("productitem")
-public class ProductItemFacadeREST extends AbstractFacade<ProductItem> {
+public class ProductItemFacadeREST extends AbstractFacade {
 //    @PersistenceContext(unitName = "KAVADrivePU")
 //    private EntityManager em;
 
@@ -31,7 +31,7 @@ public class ProductItemFacadeREST extends AbstractFacade<ProductItem> {
     @POST
     @Override
     @Consumes({"application/xml", "application/json"})
-    public Response create(ProductItem entity) {
+    public <ProductItem> Response create(ProductItem entity) {
         return super.create(entity);
     }
 
@@ -39,7 +39,7 @@ public class ProductItemFacadeREST extends AbstractFacade<ProductItem> {
     @Path("update")
     @Override
     @Consumes({"application/xml", "application/json"})
-    public Response edit(ProductItem entity) {
+    public <ProductItem> Response edit(ProductItem entity) {
         return super.edit(entity);
     }
 
@@ -60,14 +60,14 @@ public class ProductItemFacadeREST extends AbstractFacade<ProductItem> {
     @GET
     @Override
     @Produces({"application/xml", "application/json"})
-    public Response<ProductItem> findAll() {
+    public Response findAll() {
         return super.findAll();
     }
 
     @GET
     @Path("{from}/{to}")
     @Produces({"application/xml", "application/json"})
-    public Response<ProductItem> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
+    public Response findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
         return super.findRange(new int[]{from, to});
     }
 

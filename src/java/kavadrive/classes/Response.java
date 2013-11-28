@@ -5,9 +5,7 @@
 package kavadrive.classes;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.List;
-import java.util.Vector;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -47,8 +45,10 @@ public class Response<T> implements Serializable {
 
     @XmlElement(name="errorMessage")
     private String errorMessage;
+    
     @XmlElement(name="errorCode")
     private int errorCode;
+    
     @XmlElements({
         @XmlElement(name="Category",        type = Category.class),
         @XmlElement(name="OrderItem",       type = OrderItem.class),
@@ -64,7 +64,6 @@ public class Response<T> implements Serializable {
     private T entity ;
     
     @XmlElementWrapper(name = "entityList") 
-//    @XmlElement(name="entity")
     @XmlElements({
         @XmlElement(name="Category",        type = Category.class),
         @XmlElement(name="OrderItem",       type = OrderItem.class),
@@ -78,7 +77,6 @@ public class Response<T> implements Serializable {
         @XmlElement(name="Users",           type = Users.class),
     })
     private List<T> entityList ;
-
 
     static public final Response OK = new Response("OK", 0);
     static public final Response EMPTY = new Response("No result for your request.", -1);
@@ -109,34 +107,42 @@ public class Response<T> implements Serializable {
         this.errorCode = errorCode;
     }
 
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    public void setErrorMessage(String error) {
-        this.errorMessage = error;
-    }
-
-    public int getErrorCode() {
-        return errorCode;
-    }
-
-    public void setErrorCode(int errorCode) {
+    public Response(T entity, List<T> entityList, String errorMessage, int errorCode) {
+        this.entity = entity;
+        this.entityList = entityList;
+        this.errorMessage = errorMessage;
         this.errorCode = errorCode;
-    }    
-
+    }
+//    
+//
+//    public String getErrorMessage() {
+//        return errorMessage;
+//    }
+//
+//    public void setErrorMessage(String error) {
+//        this.errorMessage = error;
+//    }
+//
+//    public int getErrorCode() {
+//        return errorCode;
+//    }
+//
+//    public void setErrorCode(int errorCode) {
+//        this.errorCode = errorCode;
+//    }    
+//
     /**
      * @return the object, added to response
      */
     public T getEntity() {
         return entity;
     }
-
-    /**
-     * @param entity an object to add to Response
-     */
-    public void setEntity(T entity) {
-        this.entity = entity;
-    }
+//
+//    /**
+//     * @param entity an object to add to Response
+//     */
+//    public void setEntity(T entity) {
+//        this.entity = entity;
+//    }
 
 }

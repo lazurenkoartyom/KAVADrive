@@ -20,7 +20,7 @@ import kavadrive.entity.ProductSetList;
  */
 //@javax.ejb.Stateless
 @Path("productsetlist")
-public class ProductSetListFacadeREST extends AbstractFacade<ProductSetList> {
+public class ProductSetListFacadeREST extends AbstractFacade {
 //    @PersistenceContext(unitName = "KAVADrivePU")
 //    private EntityManager em;
 
@@ -31,7 +31,7 @@ public class ProductSetListFacadeREST extends AbstractFacade<ProductSetList> {
     @POST
     @Override
     @Consumes({"application/xml", "application/json"})
-    public Response create(ProductSetList entity) {
+    public <ProductSetList> Response create(ProductSetList entity) {
         return super.create(entity);
     }
 
@@ -39,7 +39,7 @@ public class ProductSetListFacadeREST extends AbstractFacade<ProductSetList> {
     @Path("update")
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response edit(ProductSetList entity) {
+    public <ProductSetList> Response edit(ProductSetList entity) {
         return super.edit(entity);
     }
 
@@ -60,7 +60,7 @@ public class ProductSetListFacadeREST extends AbstractFacade<ProductSetList> {
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response<ProductSetList> findAll() {
+    public Response findAll() {
         return super.findAll();
     }
 

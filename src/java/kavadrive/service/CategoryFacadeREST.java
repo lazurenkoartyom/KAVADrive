@@ -20,7 +20,7 @@ import kavadrive.entity.Category;
  */
 //@javax.ejb.Stateless
 @Path("category")
-public class CategoryFacadeREST extends AbstractFacade<Category> {
+public class CategoryFacadeREST extends AbstractFacade {
 //    @PersistenceContext(unitName = "KAVADrivePU")
 //    private EntityManager em;
 
@@ -31,7 +31,7 @@ public class CategoryFacadeREST extends AbstractFacade<Category> {
     @POST
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response create(Category entity) {
+    public <Category> Response create(Category entity) {
         return super.create(entity);
     }
 
@@ -39,7 +39,7 @@ public class CategoryFacadeREST extends AbstractFacade<Category> {
     @Path("update")
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response edit(Category entity) {
+    public <Category>  Response edit(Category entity) {
         return super.edit(entity);
     }
 

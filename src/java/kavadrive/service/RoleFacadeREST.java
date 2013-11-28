@@ -25,7 +25,7 @@ import kavadrive.entity.Role;
  */
 //@javax.ejb.Stateless
 @Path("role")
-public class RoleFacadeREST extends AbstractFacade<Role> {
+public class RoleFacadeREST extends AbstractFacade {
 //    @PersistenceContext(unitName = "KAVADrivePU")
 //    private EntityManager em;
 
@@ -36,7 +36,7 @@ public class RoleFacadeREST extends AbstractFacade<Role> {
     @POST
     @Override
     @Consumes({"application/xml", "application/json"})
-    public Response create(Role entity) {
+    public <Role> Response create(Role entity) {
         return super.create(entity);
     }
 
@@ -44,7 +44,7 @@ public class RoleFacadeREST extends AbstractFacade<Role> {
     @Path("update")
     @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response edit(Role entity) {
+    public <Role> Response edit(Role entity) {
         return super.edit(entity);
     }
 
@@ -73,7 +73,7 @@ public class RoleFacadeREST extends AbstractFacade<Role> {
     @GET
     @Path("{from}/{to}")
     @Produces({"application/xml", "application/json"})
-    public Response<Role> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
+    public Response findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
         return super.findRange(new int[]{from, to});
     }
 

@@ -14,7 +14,7 @@ import kavadrive.service.AbstractFacade;
  *
  * @author Artyom
  */
-public class UserDAO extends AbstractFacade<Users>{
+public class UserDAO extends AbstractFacade{
     private UserDAO() {
         super(Users.class);
     }
