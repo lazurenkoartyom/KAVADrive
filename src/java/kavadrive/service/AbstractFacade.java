@@ -36,7 +36,7 @@ public abstract class AbstractFacade {
             et.begin();
             em.persist(entity);
             et.commit();
-            return Response.OK;
+            return new Response(entity, "OK", 0);
         } catch (Exception e) {
             if ((et != null) && et.isActive()) {
                 et.rollback();

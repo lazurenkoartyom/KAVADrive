@@ -54,7 +54,9 @@ public class UsersFacadeREST extends AbstractFacade {
                 return new Response("Data for user is not correct.",-1);
             }
             entity.setSecretCod(generateSecurityCode());
-            return super.create(entity);
+            Response<Users> resp = super.create(entity);
+            resp.getEntity().setUserPassword(null);
+            return resp;
         } catch (Exception ex) {
             entity.setUserPassword(null);
             return new Response(entity, ex.getMessage(), -1);
