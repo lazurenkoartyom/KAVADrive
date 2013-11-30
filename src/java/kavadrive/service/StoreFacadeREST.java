@@ -4,6 +4,7 @@
  */
 package kavadrive.service;
 
+import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -12,74 +13,114 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import kavadrive.classes.Response;
+import kavadrive.dao.StoreDAO;
 import kavadrive.entity.Store;
 
 /**
  *
- * @author Artyom
+ * @author  Aleksey Dziuniak
  */
-//@javax.ejb.Stateless
+
 @Path("store")
-public class StoreFacadeREST extends AbstractFacade {
-//    @PersistenceContext(unitName = "KAVADrivePU")
-//    private EntityManager em;
-
+public class StoreFacadeREST extends AbstractFacade<Store> {
+    
     public StoreFacadeREST() {
-        super(Store.class);
     }
 
     @POST
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public <Store> Response create(Store entity) {
-        return super.create(entity);
+    public  Response create(Store entity) {
+        try {
+            StoreDAO.create(entity);
+            return super.createMessage(entity);
+        } catch (Exception e) {
+            //Logger.getLogger(StoreFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
+            return super.createMessage(e.getMessage());
+        }
     }
 
     @POST
+    @Override
     @Path("update")
-    @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public <Store> Response edit(Store entity) {
-        return super.edit(entity);
+    public Response edit(Store entity) {
+        try {
+            StoreDAO.edit(entity);
+            return super.createMessage(entity);
+        } catch (Exception e) {
+            //Logger.getLogger(StoreFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
+            return super.createMessage(e.getMessage());
+        }
     }
 
     @GET
+    @Override
     @Path("{id}/delete")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response remove(@PathParam("id") Integer id) {
-        return super.remove(super.find(id).getEntity());
+        try {
+            Store entity = StoreDAO.find(id);
+            StoreDAO.remove(entity);
+            return super.createMessage();
+        } catch (Exception e) {
+            //Logger.getLogger(StoreFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
+            return super.createMessage(e.getMessage());
+        }
     }
 
     @GET
+    @Override
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response find(@PathParam("id") Integer id) {
-        return super.find(id);
+        try {
+            Store entity = StoreDAO.find(id);
+            return super.createMessage(entity);
+        } catch (Exception e) {
+            //Logger.getLogger(StoreFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
+            return super.createMessage(e.getMessage());
+        }
     }
 
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response findAll() {
-        return super.findAll();
+        try {
+            List<Store> entityList = StoreDAO.findAll();
+            return super.createMessage(entityList);
+        } catch (Exception e) {
+            //Logger.getLogger(StoreFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
+            return super.createMessage(e.getMessage());
+        }
     }
 
     @GET
+    @Override
     @Path("{from}/{to}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
-        return super.findRange(new int[]{from, to});
+        try {
+            List<Store> entityList = StoreDAO.findRange(new int[]{from, to});
+            return super.createMessage(entityList);
+        } catch (Exception e) {
+            //Logger.getLogger(StoreFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
+            return super.createMessage(e.getMessage());
+        }
     }
 
     @GET
+    @Override
     @Path("count")
     @Produces(MediaType.APPLICATION_XML)
-    public Response countREST() {
-        return super.count();
+    public Response count() {
+        try {
+            int count = StoreDAO.count();
+            return super.createMessage(count);
+        } catch (Exception e) {
+            //Logger.getLogger(StoreFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
+            return super.createMessage(e.getMessage());
+        }
     }
-
-//    @Override
-//    protected EntityManager getEntityManager() {
-//        return super.emf.createEntityManager();
-//    }
-    
 }

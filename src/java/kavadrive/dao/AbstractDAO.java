@@ -15,11 +15,11 @@ import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import kavadrive.logic.ServiceException;
+import kavadrive.classes.ServiceException;
 
 /**
  *
- * @author Aleksey
+ * @author Aleksey Dziuniak
  */
 public abstract class AbstractDAO<T> {
     final static private EntityManagerFactory emf = 

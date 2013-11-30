@@ -2,11 +2,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package kavadrive.logic;
+package kavadrive.classes;
 
 /**
  *
- * @author Artyom
+ * @author Aleksey Dziuniak
  */
 public class ServiceException extends Exception {
     private String Message;

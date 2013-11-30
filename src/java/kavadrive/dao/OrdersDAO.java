@@ -8,7 +8,7 @@ package kavadrive.dao;
 
 import java.util.List;
 import kavadrive.entity.Orders;
-import kavadrive.logic.ServiceException;
+import kavadrive.classes.ServiceException;
 
 /**
  *
@@ -35,15 +35,15 @@ public class OrdersDAO  extends AbstractDAO<Orders> {
     public OrdersDAO() {
     }
     
-    public static void create(Orders order) throws ServiceException{
+    public static <Orders> void create(Orders order) throws ServiceException{
         add(order);
     }
     
-    public static void edit(Orders order) throws ServiceException{
+    public static <Orders> void edit(Orders order) throws ServiceException{
         update(order);
     }    
     
-    public static void remove(Orders order) throws ServiceException{
+    public static <Orders> void remove(Orders order) throws ServiceException{
         delete(order);
     }     
     

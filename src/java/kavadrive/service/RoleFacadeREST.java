@@ -5,88 +5,122 @@
 package kavadrive.service;
 
 import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import kavadrive.classes.Response;
+import kavadrive.dao.RoleDAO;
 import kavadrive.entity.Role;
 
 /**
  *
- * @author Artyom
+ * @author  Aleksey Dziuniak
  */
-//@javax.ejb.Stateless
+
 @Path("role")
-public class RoleFacadeREST extends AbstractFacade {
-//    @PersistenceContext(unitName = "KAVADrivePU")
-//    private EntityManager em;
-
+public class RoleFacadeREST extends AbstractFacade<Role> {
+    
     public RoleFacadeREST() {
-        super(Role.class);
     }
 
     @POST
     @Override
-    @Consumes({"application/xml", "application/json"})
-    public <Role> Response create(Role entity) {
-        return super.create(entity);
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public  Response create(Role entity) {
+        try {
+            RoleDAO.create(entity);
+            return super.createMessage(entity);
+        } catch (Exception e) {
+            //Logger.getLogger(RoleFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
+            return super.createMessage(e.getMessage());
+        }
     }
 
     @POST
+    @Override
     @Path("update")
-    @Override
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public <Role> Response edit(Role entity) {
-        return super.edit(entity);
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response edit(Role entity) {
+        try {
+            RoleDAO.edit(entity);
+            return super.createMessage(entity);
+        } catch (Exception e) {
+            //Logger.getLogger(RoleFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
+            return super.createMessage(e.getMessage());
+        }
     }
 
     @GET
+    @Override
     @Path("{id}/delete")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response remove(@PathParam("id") Integer id) {
-        return super.remove(super.find(id).getEntity());
-    }
-
-    @GET
-    @Path("{id}")
-    @Produces({"application/xml", "application/json"})
-    public Response find(@PathParam("id") Integer id) {
-        return super.find(id);
+        try {
+            Role entity = RoleDAO.find(id);
+            RoleDAO.remove(entity);
+            return super.createMessage();
+        } catch (Exception e) {
+            //Logger.getLogger(RoleFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
+            return super.createMessage(e.getMessage());
+        }
     }
 
     @GET
     @Override
-    @Produces({"application/xml", "application/json"})
+    @Path("{id}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response find(@PathParam("id") Integer id) {
+        try {
+            Role entity = RoleDAO.find(id);
+            return super.createMessage(entity);
+        } catch (Exception e) {
+            //Logger.getLogger(RoleFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
+            return super.createMessage(e.getMessage());
+        }
+    }
+
+    @GET
+    @Override
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response findAll() {
-        Response resp = new Response(super.findAll().getEntity(),"OK",0);
-        return resp;
+        try {
+            List<Role> entityList = RoleDAO.findAll();
+            return super.createMessage(entityList);
+        } catch (Exception e) {
+            //Logger.getLogger(RoleFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
+            return super.createMessage(e.getMessage());
+        }
     }
 
     @GET
+    @Override
     @Path("{from}/{to}")
-    @Produces({"application/xml", "application/json"})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
-        return super.findRange(new int[]{from, to});
+        try {
+            List<Role> entityList = RoleDAO.findRange(new int[]{from, to});
+            return super.createMessage(entityList);
+        } catch (Exception e) {
+            //Logger.getLogger(RoleFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
+            return super.createMessage(e.getMessage());
+        }
     }
 
     @GET
+    @Override
     @Path("count")
     @Produces(MediaType.APPLICATION_XML)
-    public Response countREST() {
-        return super.count();
+    public Response count() {
+        try {
+            int count = RoleDAO.count();
+            return super.createMessage(count);
+        } catch (Exception e) {
+            //Logger.getLogger(RoleFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
+            return super.createMessage(e.getMessage());
+        }
     }
-
-//    @Override
-//    protected EntityManager getEntityManager() {
-//        return em;
-//    }
-    
 }

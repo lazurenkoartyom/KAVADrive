@@ -29,15 +29,9 @@ import kavadrive.entity.Users;
  * Class, userd to response to requests. Contains resulting object, 
  * int error code and String error message.
  * 
- * @author Artyom
+ * @author Artyom,Aleksey Dziuniak
  */
 @XmlRootElement
-@XmlSeeAlso({Users.class, 
-    Product.class, 
-    Store.class,
-    Orders.class,
-    Category.class
-})
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder = {"entity", "entityList", "errorMessage", "errorCode"})
 
@@ -60,6 +54,7 @@ public class Response<T> implements Serializable {
         @XmlElement(name="Role",            type = Role.class),
         @XmlElement(name="Store",           type = Store.class),
         @XmlElement(name="Users",           type = Users.class),
+        @XmlElement(name="Count",           type = Integer.class),
     })
     private T entity ;
     
@@ -101,8 +96,8 @@ public class Response<T> implements Serializable {
         this.errorMessage = errorMessage;
         this.errorCode = errorCode;
     }
-    public Response(List<T> entity, String errorMessage, int errorCode) {
-        this.entityList = entity;
+    public Response(List<T> entityList, String errorMessage, int errorCode) {
+        this.entityList = entityList;
         this.errorMessage = errorMessage;
         this.errorCode = errorCode;
     }
@@ -113,36 +108,4 @@ public class Response<T> implements Serializable {
         this.errorMessage = errorMessage;
         this.errorCode = errorCode;
     }
-//    
-//
-//    public String getErrorMessage() {
-//        return errorMessage;
-//    }
-//
-//    public void setErrorMessage(String error) {
-//        this.errorMessage = error;
-//    }
-//
-//    public int getErrorCode() {
-//        return errorCode;
-//    }
-//
-//    public void setErrorCode(int errorCode) {
-//        this.errorCode = errorCode;
-//    }    
-//
-    /**
-     * @return the object, added to response
-     */
-    public T getEntity() {
-        return entity;
-    }
-//
-//    /**
-//     * @param entity an object to add to Response
-//     */
-//    public void setEntity(T entity) {
-//        this.entity = entity;
-//    }
-
 }

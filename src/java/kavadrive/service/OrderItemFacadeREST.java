@@ -4,8 +4,7 @@
  */
 package kavadrive.service;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -14,85 +13,133 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import kavadrive.classes.Response;
+import kavadrive.dao.OrderItemDAO;
 import kavadrive.dao.OrdersDAO;
+import static kavadrive.dao.OrderItemDAO.Parameters.*;
+import kavadrive.dao.UsersDAO;
 import kavadrive.entity.OrderItem;
+import kavadrive.entity.Orders;
 import kavadrive.entity.Users;
-import kavadrive.logic.ServiceException;
 
 /**
  *
- * @author Artyom
+ * @author  Aleksey Dziuniak
  */
-//@javax.ejb.Stateless
 @Path("orderitem")
-public class OrderItemFacadeREST extends AbstractFacade {
-//    @PersistenceContext(unitName = "KAVADrivePU")
-//    private EntityManager em;
-
+public class OrderItemFacadeREST extends AbstractFacade<OrderItem>  {
+    
     public OrderItemFacadeREST() {
-        super(OrderItem.class);
     }
 
     @POST
     @Override
-    @Consumes({"application/xml", "application/json"})
-    public <OrderItem> Response create(OrderItem entity) {
-        return super.create(entity);
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response create(OrderItem entity) {
+        try {
+            OrderItemDAO.create(entity);
+            return super.createMessage(entity);
+        } catch (Exception e) {
+            //Logger.getLogger(OrdersFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
+            return super.createMessage(e.getMessage());
+        }
     }
 
     @POST
+    @Override
     @Path("update")
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response edit(OrderItem entity) {
+        try {
+            OrderItemDAO.edit(entity);
+            return super.createMessage(entity);
+        } catch (Exception e) {
+            //Logger.getLogger(OrdersFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
+            return super.createMessage(e.getMessage());
+        }
+    }
+
+    @GET
     @Override
-    @Consumes({"application/xml", "application/json"})
-    public <OrderItem> Response edit(OrderItem entity) {
-        return super.edit(entity);
-    }
-
-    @GET
     @Path("{id}/delete")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response remove(@PathParam("id") Integer id) {
-        return super.remove(super.find(id).getEntity());
+        try {
+            OrderItem entity = OrderItemDAO.find(id);
+            OrderItemDAO.remove(entity);
+            return super.createMessage();
+        } catch (Exception e) {
+            //Logger.getLogger(OrdersFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
+            return super.createMessage(e.getMessage());
+        }
     }
 
     @GET
+    @Override
     @Path("{id}")
-    @Produces({"application/xml", "application/json"})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response find(@PathParam("id") Integer id) {
         try {
-            Users user = new Users();
-            OrdersDAO.find(id);
-            OrdersDAO.findByParameter(OrdersDAO.Parameters.USER, user);
-        } catch (ServiceException ex) {
-            Logger.getLogger(OrderItemFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+            OrderItem entity = OrderItemDAO.find(id);
+            return super.createMessage(entity);
+        } catch (Exception e) {
+            //Logger.getLogger(OrdersFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
+            return super.createMessage(e.getMessage());
         }
-    
-        return super.find(id);
     }
 
     @GET
     @Override
-    @Produces({"application/xml", "application/json"})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response findAll() {
-        return super.findAll();
+        try {
+            List<OrderItem> entityList = OrderItemDAO.findAll();
+            return super.createMessage(entityList);
+        } catch (Exception e) {
+            //Logger.getLogger(OrdersFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
+            return super.createMessage(e.getMessage());
+        }
     }
 
     @GET
+    @Override
     @Path("{from}/{to}")
-    @Produces({"application/xml", "application/json"})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
-        return super.findRange(new int[]{from, to});
+        try {
+            List<OrderItem> entityList = OrderItemDAO.findRange(new int[]{from, to});
+            return super.createMessage(entityList);
+        } catch (Exception e) {
+            //Logger.getLogger(OrdersFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
+            return super.createMessage(e.getMessage());
+        }
     }
 
     @GET
+    @Override
     @Path("count")
     @Produces(MediaType.APPLICATION_XML)
-    public Response countREST() {
-        return super.count();
+    public Response count() {
+        try {
+            int count = OrderItemDAO.count();
+            return super.createMessage(count);
+        } catch (Exception e) {
+            //Logger.getLogger(OrdersFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
+            return super.createMessage(e.getMessage());
+        }
     }
-
-//    @Override
-//    protected EntityManager getEntityManager() {
-//        return em;
-//    }
     
+    @GET
+    @Path("order/{id}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response findByOrder(@PathParam("id") Integer id) {
+        try {
+            Orders order = OrdersDAO.find(id);
+            List<OrderItem> found = OrderItemDAO.findByParameter(ORDER, order);
+            OrderItemDAO.clearParameters(found,ORDER);
+            return super.createMessage(order, found);
+        } catch (Exception e) {
+            //Logger.getLogger(OrdersFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
+            return super.createMessage(e.getMessage());
+        }
+    }
 }

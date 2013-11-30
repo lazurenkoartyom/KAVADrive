@@ -5,8 +5,10 @@
 package kavadrive.logic;
 
 
+import kavadrive.classes.ServiceException;
 import java.math.BigInteger;
 import java.util.Date;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -20,18 +22,24 @@ import javax.servlet.http.Cookie;
 import javax.ws.rs.core.MediaType;
 import kavadrive.classes.Response;
 import kavadrive.classes.UserInfo;
+import kavadrive.dao.UsersDAO;
+import static kavadrive.dao.UsersDAO.Parameters.*;
 import kavadrive.entity.Role;
 import kavadrive.entity.Users;
 
 /**
  *
- * @author Artyom
+ * @author Artyom,Aleksey Dziuniak
  */
 @Path("security")
 public class Security {
     
     private static final long TOKEN_EXPIRE_PERIOD = 2592000000L; //milliseconds for 30 days
-
+    private final static String COOKIE_NAME = "Token";
+    private final static String COOKIE_PATH = "/KAVADrive/webresources/";
+    private final static String ATTRIBUTE_NAME = "userInfo";
+   
+    
     @Context
     private HttpServletRequest request;
     
@@ -50,12 +58,19 @@ public class Security {
     public Response logout(){
         try {
             HttpSession session = request.getSession();
-            session.invalidate();//setAttribute("userInfo", null);
+            clearToken();
+            session.invalidate();
             return Response.OK;
         } catch (Exception ex) {
             //There is no UserInfo in current session
             return new Response (null, "U r not logged in.", -1);
         }
+    }
+    
+    private void clearToken() {
+        Cookie cookie = new Cookie(COOKIE_NAME, "");
+        cookie.setPath(COOKIE_PATH);
+        response.addCookie(cookie);
     }
     
     @POST
@@ -82,25 +97,22 @@ public class Security {
     
     private boolean isClientLoggedIn(){
         HttpSession session = request.getSession();
-        UserInfo userFromSession = (UserInfo)session.getAttribute("userInfo");
+        UserInfo userFromSession = (UserInfo)session.getAttribute(ATTRIBUTE_NAME);
         return userFromSession != null;
     }
     
     /************* Login by token ****************/
     private Response loginByToken(String token) throws ServiceException {
-        Users loggingInUser;
-        loggingInUser = UserDAO.findByToken(token);
-
-        if(loggingInUser == null) {
-            Cookie cookie = new Cookie("Token", "");
-            cookie.setPath("/KAVADrive/webresources/");
-            response.addCookie(cookie);
+        List<Users> users = UsersDAO.findByParameter(TOKEN, token);
+        
+        if(users.isEmpty()) {
+            clearToken();
             return new Response(null, "Not found user with this token. Try to relogin.", -1);
         }
+        Users loggingInUser = users.get(0);
         checkTokenExpireAndUpdateToken(loggingInUser);
         setSessionAttribute(loggingInUser);
-        loggingInUser.setUserPassword(null);
-        return new Response(loggingInUser, "OK", 0);
+        return Response.OK;
     }
 
     private void checkTokenExpireAndUpdateToken(Users user) throws ServiceException{
@@ -110,7 +122,6 @@ public class Security {
         }
     }
     
-    
     private void resetSecretCodAndChangeToken(Users user) throws ServiceException{
         if(user.getSecretCod()!= null){
             user.setSecretCod(null);
@@ -118,32 +129,27 @@ public class Security {
         String token;
         do{
             token = TokenFactory.getNewValue();
-        }while(isExistingInDataBase(user, token));
+        }while(isExistingInDataBase(token));
         user.setToken(token);
         user.setTokenCreate(BigInteger.valueOf(new Date().getTime()+TOKEN_EXPIRE_PERIOD));
-        UserDAO.update(user);//update data in DataBase
+        UsersDAO.edit(user);//update data in DataBase
     }
     
-    private boolean isExistingInDataBase(Users user, String token) throws ServiceException {
-        user = UserDAO.findByToken(token);
-        return user != null;
+    private boolean isExistingInDataBase(String token) throws ServiceException {
+        List<Users> users = UsersDAO.findByParameter(TOKEN, token);
+        return !users.isEmpty();
     }
     
     private void setSessionAttribute(Users user) throws ServiceException{
-//        int MIN_TOKEN_LIFETIME_SEC = 1800;
-        Cookie cookie = new Cookie("Token", user.getToken());
+        Cookie cookie = new Cookie(COOKIE_NAME, user.getToken());
         int tokenSecToExpire = getCookieMaxAge(user);
-//        if(tokenSecToExpire < MIN_TOKEN_LIFETIME_SEC){
-//            resetSecretCodAndChangeToken(user);
-//            tokenSecToExpire = getCookieMaxAge(user);
-//        }
         cookie.setMaxAge(tokenSecToExpire);
-        cookie.setPath("/KAVADrive/webresources/");
+        cookie.setPath(COOKIE_PATH);
         response.addCookie(cookie);
         user.setUserPassword(null);
         UserInfo userInfo = new UserInfo(user);
         HttpSession session = request.getSession();
-        session.setAttribute("userInfo", userInfo);
+        session.setAttribute(ATTRIBUTE_NAME, userInfo);
     }
     
     private int getCookieMaxAge(Users user) {
@@ -164,15 +170,17 @@ public class Security {
         //Checking phone and email and searching user in DB
         Users foundUser;
         if (phone != null) {
-            foundUser = UserDAO.findByPhone(phone);
-            if(foundUser==null) {
+            List<Users> users = UsersDAO.findByParameter(PHONE, phone);
+            if(users.isEmpty()) {
                 return new Response(null, "A phone number is wrong.", -1);
             }
+            foundUser = users.get(0);
         } else if (email != null) {
-            foundUser = UserDAO.findByEMail(email);
-            if(foundUser==null) {
+            List<Users> users = UsersDAO.findByParameter(EMAIL, email);
+            if(users.isEmpty()) {
                 return new Response(null, "A e-mail is wrong.", -1);
             }
+            foundUser = users.get(0);
        } else {
             //User did not provide phone number or e-mail
             return new Response(null, "You must provide a phone number or e-mail.", -1);
@@ -189,8 +197,7 @@ public class Security {
                 || foundUser.getSecretCod().equals(secretCode)) {
             resetSecretCodAndChangeToken(foundUser);
             setSessionAttribute(foundUser);
-            foundUser.setUserPassword(null);
-            return new Response(foundUser, "OK", 0);
+            return Response.OK;
         }else{
             return new Response(null, "Wrong registration code.", -1);
         }
@@ -208,11 +215,11 @@ public class Security {
     }
     
     private static boolean isValidRole(String token,Role... roles) throws ServiceException{
-        Users client = UserDAO.findByToken(token);
-        
-        if(client == null) {
+        List<Users> users = UsersDAO.findByParameter(TOKEN, token);
+        if(users.isEmpty()) {
             return false;
         }
+        Users client = users.get(0);
         for (Role role : roles){
             if(client.getRoleId().equals(role)){
                 return true;
@@ -223,11 +230,11 @@ public class Security {
 
     public static String getTokenFromSession(HttpServletRequest request){
         Cookie[] cookies = request.getCookies();
-        if (cookies == null) {
+        if (cookies.length == 0) {
             return null;
         }
         for(Cookie cookie : cookies) {
-            if ("Token".equals(cookie.getName())) {
+            if (COOKIE_NAME.equals(cookie.getName())) {
                 return cookie.getValue();
             }
         }

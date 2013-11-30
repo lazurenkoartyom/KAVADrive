@@ -10,7 +10,7 @@ import org.eclipse.persistence.sessions.DatabaseLogin;
 
 /**
  *
- * @author Aleksey
+ * @author Aleksey Dziuniak
  */
 
 public class ServiceCustomizer implements SessionCustomizer {

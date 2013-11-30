@@ -7,23 +7,19 @@
 package kavadrive.dao;
 
 import java.util.List;
-import kavadrive.entity.Users;
+import kavadrive.entity.Role;
 import kavadrive.classes.ServiceException;
 
 /**
  *
  * @author Aleksey Dziuniak
  */
-public class UsersDAO extends AbstractDAO<Users> {
+public class RoleDAO extends AbstractDAO<Role> {
     
-    private final static Class<Users> ENTITY_CLASS = Users.class;
+    private final static Class<Role> ENTITY_CLASS = Role.class;
     
     public enum Parameters {
-        ID("userId"),
-        TOKEN("token"),
-        PASSWORD("userPassword"),
-        PHONE("userPhone"),
-        EMAIL("email");
+        ID("roleId");
     
         private final String name;
         private Parameters(String name){
@@ -35,30 +31,30 @@ public class UsersDAO extends AbstractDAO<Users> {
         }
     }
     
-    public UsersDAO() {
+    public RoleDAO() {
     }
     
-    public static <Users> void create(Users user) throws ServiceException{
-        add(user);
+    public static <Role> void create(Role role) throws ServiceException{
+        add(role);
     }
     
-    public static <Users> void edit(Users user) throws ServiceException{
-        update(user);
+    public static <Role> void edit(Role role) throws ServiceException{
+        update(role);
     }    
     
-    public static <Users> void remove(Users user) throws ServiceException{
-        delete(user);
+    public static <Role> void remove(Role role) throws ServiceException{
+        delete(role);
     }     
     
-    public static List<Users> findAll() throws ServiceException{
+    public static List<Role> findAll() throws ServiceException{
         return getAll(ENTITY_CLASS);
     }
     
-    public static Users find(Object id) throws ServiceException{
+    public static Role find(Object id) throws ServiceException{
         return getById(ENTITY_CLASS,id);
     }
     
-    public static List<Users> findRange(int[] range) throws ServiceException{
+    public static List<Role> findRange(int[] range) throws ServiceException{
         return getRange(ENTITY_CLASS,range);
     }
     
@@ -66,9 +62,8 @@ public class UsersDAO extends AbstractDAO<Users> {
         return getCount(ENTITY_CLASS);
     }
     
-    public static <E> List<Users> findByParameter(Parameters name, E parameterValue) throws ServiceException{
+    public static <E> List<Role> findByParameter(Parameters name, E parameterValue) throws ServiceException{
         String nameParameter = name.getName();
         return getByParameter(ENTITY_CLASS, nameParameter, parameterValue);
     }
 }
-

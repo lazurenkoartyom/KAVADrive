@@ -8,7 +8,7 @@ import java.util.Random;
 
 /**
  *
- * @author Aleksey
+ * @author Aleksey Dziuniak
  */
 public class TokenFactory {
            
