@@ -6,6 +6,7 @@ package kavadrive.entity;
 
 import java.io.Serializable;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -47,7 +48,7 @@ public class OrderItem implements Serializable {
     @ManyToOne(optional = false)
     private Product productId;
     @JoinColumn(name = "order_id", referencedColumnName = "order_id")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private Orders orderId;
 
     public OrderItem() {

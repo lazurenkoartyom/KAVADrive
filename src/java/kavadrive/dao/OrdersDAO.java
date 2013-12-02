@@ -18,6 +18,13 @@ public class OrdersDAO  extends AbstractDAO<Orders> {
     
     private final static Class<Orders> ENTITY_CLASS = Orders.class;
     
+    private static class OrderStatus {
+        final static String NEW = "NEW";
+        final static String PROCEEDING = "PROCEEDING";
+        final static String CLOSED = "CLOSED";
+        final static String CANCELED = "CANCELED";
+   }
+    
     public enum Parameters {
         ID("orderId"),
         USER("userId");
@@ -35,7 +42,8 @@ public class OrdersDAO  extends AbstractDAO<Orders> {
     public OrdersDAO() {
     }
     
-    public static <Orders> void create(Orders order) throws ServiceException{
+    public static void create(Orders order) throws ServiceException{
+        order.setStatus(OrderStatus.NEW);
         add(order);
     }
     

@@ -32,6 +32,12 @@ import kavadrive.entity.Users;
  * @author Artyom,Aleksey Dziuniak
  */
 @XmlRootElement
+@XmlSeeAlso({Users.class, 
+    Product.class, 
+    Store.class,
+    Orders.class,
+    Category.class
+})
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder = {"entity", "entityList", "errorMessage", "errorCode"})
 
