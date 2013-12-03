@@ -1,1 +1,7 @@
 /dist/
+=======
+*.class
+
+# Package Files #
+*.jar
+*.ear
