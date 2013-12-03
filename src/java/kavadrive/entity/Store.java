@@ -6,8 +6,8 @@ package kavadrive.entity;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -83,7 +83,7 @@ public class Store implements Serializable {
     @Column(name = "store_description")
     private String storeDescription;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "storeId")
-    private Collection<Orders> ordersCollection;
+    private List<Orders> ordersList;
 
     public Store() {
     }
@@ -193,12 +193,12 @@ public class Store implements Serializable {
 
     @XmlTransient
     @JsonIgnore
-    public Collection<Orders> getOrdersCollection() {
-        return ordersCollection;
+    public List<Orders> getOrdersList() {
+        return ordersList;
     }
 
-    public void setOrdersCollection(Collection<Orders> ordersCollection) {
-        this.ordersCollection = ordersCollection;
+    public void setOrdersList(List<Orders> ordersList) {
+        this.ordersList = ordersList;
     }
 
     @Override
@@ -223,7 +223,7 @@ public class Store implements Serializable {
 
     @Override
     public String toString() {
-        return "kavadrive.classes.Store[ storeId=" + storeId + " ]";
+        return "kavadrive.entity.Store[ storeId=" + storeId + " ]";
     }
     
 }

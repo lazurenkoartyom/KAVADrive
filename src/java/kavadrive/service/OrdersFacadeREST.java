@@ -4,6 +4,7 @@
  */
 package kavadrive.service;
 
+import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -12,75 +13,130 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import kavadrive.classes.Response;
-import kavadrive.classes.Response_List;
+import kavadrive.dao.UsersDAO;
+import kavadrive.entity.Users;
+import static kavadrive.dao.OrdersDAO.Parameters.*;
+import kavadrive.dao.OrdersDAO;
 import kavadrive.entity.Orders;
 
 /**
  *
- * @author Artyom
+ * @author  Aleksey Dziuniak
  */
-//@javax.ejb.Stateless
 @Path("orders")
 public class OrdersFacadeREST extends AbstractFacade<Orders> {
-//    @PersistenceContext(unitName = "KAVADrivePU")
-//    private EntityManager em;
-
+    
     public OrdersFacadeREST() {
-        super(Orders.class);
     }
 
     @POST
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response create(Orders entity) {
-        return super.create(entity);
+    public  Response create(Orders entity) {
+        try {
+            OrdersDAO.create(entity);
+            return super.createMessage(entity);
+        } catch (Exception e) {
+            //Logger.getLogger(OrdersFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
+            return super.createMessage(e.getMessage());
+        }
     }
 
     @POST
-    @Path("update")
     @Override
+    @Path("update")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response edit(Orders entity) {
-        return super.edit(entity);
+        try {
+            OrdersDAO.edit(entity);
+            return super.createMessage(entity);
+        } catch (Exception e) {
+            //Logger.getLogger(OrdersFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
+            return super.createMessage(e.getMessage());
+        }
     }
 
     @GET
+    @Override
     @Path("{id}/delete")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response remove(@PathParam("id") Integer id) {
-        return super.remove(super.find(id).getEntity());
+        try {
+            Orders entity = OrdersDAO.find(id);
+            OrdersDAO.remove(entity);
+            return super.createMessage();
+        } catch (Exception e) {
+            //Logger.getLogger(OrdersFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
+            return super.createMessage(e.getMessage());
+        }
     }
 
     @GET
+    @Override
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response<Orders> find(@PathParam("id") Integer id) {
-        return super.find(id);
+    public Response find(@PathParam("id") Integer id) {
+        try {
+            Orders entity = OrdersDAO.find(id);
+            return super.createMessage(entity);
+        } catch (Exception e) {
+            //Logger.getLogger(OrdersFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
+            return super.createMessage(e.getMessage());
+        }
     }
 
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response_List<Orders> findAll() {
-        return super.findAll();
+    public Response findAll() {
+        try {
+            List<Orders> entityList = OrdersDAO.findAll();
+            return super.createMessage(entityList);
+        } catch (Exception e) {
+            //Logger.getLogger(OrdersFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
+            return super.createMessage(e.getMessage());
+        }
     }
 
     @GET
+    @Override
     @Path("{from}/{to}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response_List<Orders> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
-        return super.findRange(new int[]{from, to});
+    public Response findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
+        try {
+            List<Orders> entityList = OrdersDAO.findRange(new int[]{from, to});
+            return super.createMessage(entityList);
+        } catch (Exception e) {
+            //Logger.getLogger(OrdersFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
+            return super.createMessage(e.getMessage());
+        }
     }
 
     @GET
+    @Override
     @Path("count")
-    @Produces("text/plain")
-    public String countREST() {
-        return String.valueOf(super.count());
+    @Produces(MediaType.APPLICATION_XML)
+    public Response count() {
+        try {
+            int count = OrdersDAO.count();
+            return super.createMessage(count);
+        } catch (Exception e) {
+            //Logger.getLogger(OrdersFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
+            return super.createMessage(e.getMessage());
+        }
     }
 
-//    @Override
-//    protected EntityManager getEntityManager() {
-//        return em;
-//    }
-    
+    @GET
+    @Path("user/{id}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response findByUser(@PathParam("id") Integer id) {
+        try {
+            Users user = UsersDAO.find(id);
+            List<Orders> found = OrdersDAO.findByParameter(USER, user); 
+            return super.createMessage(user, found);
+        } catch (Exception e) {
+            //Logger.getLogger(OrdersFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
+            return super.createMessage(e.getMessage());
+        }
+    }
 }

@@ -11,6 +11,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -36,6 +38,12 @@ public class OrderSimpleItem implements Serializable {
     private Integer orderSimpleItemId;
     @Column(name = "product_quantity")
     private Integer productQuantity;
+    @JoinColumn(name = "product_id", referencedColumnName = "product_id")
+    @ManyToOne
+    private Product productId;
+    @JoinColumn(name = "order_id", referencedColumnName = "order_id")
+    @ManyToOne
+    private Orders orderId;
 
     public OrderSimpleItem() {
     }
@@ -58,6 +66,22 @@ public class OrderSimpleItem implements Serializable {
 
     public void setProductQuantity(Integer productQuantity) {
         this.productQuantity = productQuantity;
+    }
+
+    public Product getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Product productId) {
+        this.productId = productId;
+    }
+
+    public Orders getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(Orders orderId) {
+        this.orderId = orderId;
     }
 
     @Override

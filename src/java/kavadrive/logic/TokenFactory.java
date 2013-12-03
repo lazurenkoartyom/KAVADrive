@@ -5,12 +5,10 @@
 package kavadrive.logic;
 
 import java.util.Random;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  *
- * @author Aleksey
+ * @author Aleksey Dziuniak
  */
 public class TokenFactory {
            

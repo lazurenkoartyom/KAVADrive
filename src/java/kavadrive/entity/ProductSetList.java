@@ -5,6 +5,7 @@
 package kavadrive.entity;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,8 +15,11 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
@@ -41,6 +45,8 @@ public class ProductSetList implements Serializable {
     @Lob
     @Column(name = "product_description")
     private String productDescription;
+    @OneToMany(mappedBy = "setListName")
+    private List<Product> productList;
     @JoinColumn(name = "product_item_id", referencedColumnName = "product_item_id")
     @ManyToOne(optional = false)
     private ProductItem productItemId;
@@ -80,6 +86,16 @@ public class ProductSetList implements Serializable {
 
     public void setProductDescription(String productDescription) {
         this.productDescription = productDescription;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public List<Product> getProductList() {
+        return productList;
+    }
+
+    public void setProductList(List<Product> productList) {
+        this.productList = productList;
     }
 
     public ProductItem getProductItemId() {

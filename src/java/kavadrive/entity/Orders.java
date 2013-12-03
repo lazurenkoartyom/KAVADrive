@@ -7,7 +7,9 @@ package kavadrive.entity;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,10 +19,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
@@ -61,12 +66,16 @@ public class Orders implements Serializable {
     @Basic(optional = false)
     @Column(name = "status")
     private String status;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "orderId")
+    private List<OrderItem> orderItemList;
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     @ManyToOne
     private Users userId;
     @JoinColumn(name = "store_id", referencedColumnName = "store_id")
     @ManyToOne(optional = false)
     private Store storeId;
+    @OneToMany(mappedBy = "orderId")
+    private List<OrderSimpleItem> orderSimpleItemList;
 
     public Orders() {
     }
@@ -131,6 +140,16 @@ public class Orders implements Serializable {
         this.status = status;
     }
 
+    @XmlTransient
+    @JsonIgnore
+    public List<OrderItem> getOrderItemList() {
+        return orderItemList;
+    }
+
+    public void setOrderItemList(List<OrderItem> orderItemList) {
+        this.orderItemList = orderItemList;
+    }
+
     public Users getUserId() {
         return userId;
     }
@@ -145,6 +164,16 @@ public class Orders implements Serializable {
 
     public void setStoreId(Store storeId) {
         this.storeId = storeId;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public List<OrderSimpleItem> getOrderSimpleItemList() {
+        return orderSimpleItemList;
+    }
+
+    public void setOrderSimpleItemList(List<OrderSimpleItem> orderSimpleItemList) {
+        this.orderSimpleItemList = orderSimpleItemList;
     }
 
     @Override
@@ -169,7 +198,7 @@ public class Orders implements Serializable {
 
     @Override
     public String toString() {
-        return "kavadrive.classes.Orders[ orderId=" + orderId + " ]";
+        return "kavadrive.entity.Orders[ orderId=" + orderId + " ]";
     }
     
 }

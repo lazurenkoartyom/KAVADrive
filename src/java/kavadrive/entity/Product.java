@@ -4,10 +4,11 @@
  */
 package kavadrive.entity;
 
-import kavadrive.entity.Category;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,8 +19,11 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
@@ -55,6 +59,15 @@ public class Product implements Serializable {
     @JoinColumn(name = "category_id", referencedColumnName = "category_id")
     @ManyToOne(optional = false)
     private Category categoryId;
+    @JoinColumn(name = "set_list_name", referencedColumnName = "set_list_name")
+    @ManyToOne
+    private ProductSetList setListName;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "productId")
+    private List<OrderItem> orderItemList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "productId")
+    private List<ProductItem> productItemList;
+    @OneToMany(mappedBy = "productId")
+    private List<OrderSimpleItem> orderSimpleItemList;
 
     public Product() {
     }
@@ -116,6 +129,44 @@ public class Product implements Serializable {
         this.categoryId = categoryId;
     }
 
+    public ProductSetList getSetListName() {
+        return setListName;
+    }
+
+    public void setSetListName(ProductSetList setListName) {
+        this.setListName = setListName;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public List<OrderItem> getOrderItemList() {
+        return orderItemList;
+    }
+
+    public void setOrderItemList(List<OrderItem> orderItemList) {
+        this.orderItemList = orderItemList;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public List<ProductItem> getProductItemList() {
+        return productItemList;
+    }
+
+    public void setProductItemList(List<ProductItem> productItemList) {
+        this.productItemList = productItemList;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public List<OrderSimpleItem> getOrderSimpleItemList() {
+        return orderSimpleItemList;
+    }
+
+    public void setOrderSimpleItemList(List<OrderSimpleItem> orderSimpleItemList) {
+        this.orderSimpleItemList = orderSimpleItemList;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -138,7 +189,7 @@ public class Product implements Serializable {
 
     @Override
     public String toString() {
-        return "kavadrive.classes.Product[ productId=" + productId + " ]";
+        return "kavadrive.entity.Product[ productId=" + productId + " ]";
     }
     
 }

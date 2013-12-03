@@ -5,7 +5,7 @@
 package kavadrive.entity;
 
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -46,7 +46,7 @@ public class Category implements Serializable {
     @Column(name = "category_parent_id")
     private Integer categoryParentId;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "categoryId")
-    private Collection<Product> productCollection;
+    private List<Product> productList;
 
     public Category() {
     }
@@ -86,12 +86,12 @@ public class Category implements Serializable {
 
     @XmlTransient
     @JsonIgnore
-    public Collection<Product> getProductCollection() {
-        return productCollection;
+    public List<Product> getProductList() {
+        return productList;
     }
 
-    public void setProductCollection(Collection<Product> productCollection) {
-        this.productCollection = productCollection;
+    public void setProductList(List<Product> productList) {
+        this.productList = productList;
     }
 
     @Override
@@ -116,7 +116,7 @@ public class Category implements Serializable {
 
     @Override
     public String toString() {
-        return "kavadrive.classes.Category[ categoryId=" + categoryId + " ]";
+        return "kavadrive.entity.Category[ categoryId=" + categoryId + " ]";
     }
     
 }

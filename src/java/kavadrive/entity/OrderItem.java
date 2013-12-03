@@ -6,11 +6,14 @@ package kavadrive.entity;
 
 import java.io.Serializable;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -41,6 +44,12 @@ public class OrderItem implements Serializable {
     @Basic(optional = false)
     @Column(name = "item_price")
     private float itemPrice;
+    @JoinColumn(name = "product_id", referencedColumnName = "product_id")
+    @ManyToOne(optional = false)
+    private Product productId;
+    @JoinColumn(name = "order_id", referencedColumnName = "order_id")
+    @ManyToOne(optional = false, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    private Orders orderId;
 
     public OrderItem() {
     }
@@ -77,6 +86,22 @@ public class OrderItem implements Serializable {
 
     public void setItemPrice(float itemPrice) {
         this.itemPrice = itemPrice;
+    }
+
+    public Product getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Product productId) {
+        this.productId = productId;
+    }
+
+    public Orders getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(Orders orderId) {
+        this.orderId = orderId;
     }
 
     @Override
