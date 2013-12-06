@@ -199,7 +199,7 @@ public class Security {
             setSessionAttribute(foundUser);
             return new Response(foundUser);
         }else{
-            return new Response(null, "Wrong registration code.", -1);
+            return new Response(null, "Wrong registration code.", -2);
         }
     }
     

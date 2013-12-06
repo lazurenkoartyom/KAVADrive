@@ -97,7 +97,7 @@ public class UsersFacadeREST extends AbstractFacade<Users> {
                 return super.createMessage("User with email " + entity.getEmail() + " already existing.");
             }
             
-            if (oldUser.getRoleId() != entity.getRoleId()) {
+            if (oldUser.getRoleId().getRoleId().intValue() != entity.getRoleId().getRoleId().intValue()) {
                if(!Security.checkClientRole(request,ADMINISTRATOR)){
                     entity.setRoleId(oldUser.getRoleId());
                     return super.createMessage("U do not have enough permissions to change role.");
