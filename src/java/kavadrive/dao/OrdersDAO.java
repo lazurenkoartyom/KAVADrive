@@ -15,7 +15,7 @@ import kavadrive.classes.ServiceException;
  * @author Aleksey
  */
 public class OrdersDAO  extends AbstractDAO<Orders> {
-    
+
     private final static Class<Orders> ENTITY_CLASS = Orders.class;
     
     private static class OrderStatus {
@@ -23,8 +23,8 @@ public class OrdersDAO  extends AbstractDAO<Orders> {
         final static String PROCEEDING = "PROCEEDING";
         final static String CLOSED = "CLOSED";
         final static String CANCELED = "CANCELED";
-   }
-    
+    }
+
     public enum Parameters {
         ID("orderId"),
         USER("userId");

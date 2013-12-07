@@ -48,7 +48,7 @@ public class OrderItem implements Serializable {
     @ManyToOne(optional = false)
     private Product productId;
     @JoinColumn(name = "order_id", referencedColumnName = "order_id")
-    @ManyToOne(optional = false)//, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToOne(optional = false, cascade = {CascadeType.PERSIST,CascadeType.MERGE})
     private Orders orderId;
 
     public OrderItem() {
