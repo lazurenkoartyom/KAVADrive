@@ -79,39 +79,33 @@ public class Response<T> implements Serializable {
     })
     private List<T> entityList ;
 
-    static public final Response OK = new Response("OK", 0);
-    static public final Response EMPTY = new Response("No result for your request.", -1);
+    static public final Response OK = new Response(Message.OK);
+    static public final Response EMPTY = new Response(Message.NO_RESULT);
     
-    public Response() {
+    public Response(){
+        
+    }
+    
+    public Response(Message message) {
+        this.entity = null;
+        this.entityList = null;
+        this.errorMessage = message.getMessage();
+        this.errorCode = message.getCode();
     }
 
     public Response(T entity) {
+        this(Message.OK);
         this.entity = entity;
-        this.errorMessage = "OK";
-        this.errorCode = 0;
     }
     
-    public Response(String errorMessage, int errorCode) {
-        this.entity = null;
-        this.errorMessage = errorMessage;
-        this.errorCode = errorCode;
-    }
-    
-    public Response(T entity, String errorMessage, int errorCode) {
-        this.entity = entity;
-        this.errorMessage = errorMessage;
-        this.errorCode = errorCode;
-    }
-    public Response(List<T> entityList, String errorMessage, int errorCode) {
+    public Response(List<T> entityList) {
+        this(Message.OK);
         this.entityList = entityList;
-        this.errorMessage = errorMessage;
-        this.errorCode = errorCode;
     }
 
-    public Response(T entity, List<T> entityList, String errorMessage, int errorCode) {
+    public Response(T entity, List<T> entityList) {
+        this(Message.OK);
         this.entity = entity;
         this.entityList = entityList;
-        this.errorMessage = errorMessage;
-        this.errorCode = errorCode;
     }
 }

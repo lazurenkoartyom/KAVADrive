@@ -5,6 +5,7 @@
 package kavadrive.service;
 
 import java.util.List;
+import kavadrive.classes.Message;
 import kavadrive.classes.Response;
 
 /**
@@ -21,31 +22,31 @@ public abstract class AbstractFacade<T> {
     protected abstract Response findRange(Integer from, Integer to);
     protected abstract Response count();
     
-    protected Response createMessage(){
+    protected Response createResponse(){
         return Response.OK;
     }
     
-    protected Response createMessage(String errorMessage){
-        return new Response(errorMessage, -1);
+    protected Response createResponse(Message message){
+        return new Response(message);
+    }   
+    
+    protected Response createResponse(int count){
+        return new Response(count);
     }
     
-    protected Response createMessage(int count){
-        return new Response(count, "OK", 0);
+    protected Response createResponse(T entity){
+        return  new Response(entity);
     }
     
-    protected Response createMessage(T entity){
-        return  new Response(entity, "OK", 0);
-    }
-    
-    protected Response createMessage(List<T> entityList){
+    protected Response createResponse(List<T> entityList){
          return entityList.isEmpty()
-                    ? new Response("No object found in DB", -1) 
-                    : new Response(entityList, "OK", 0);
+                    ? new Response(Message.NOT_FOUND_IN_DB) 
+                    : new Response(entityList);
     }
     
-    protected <T,E> Response createMessage(T entity, List<E> entityList){
+    protected <T,E> Response createResponse(T entity, List<E> entityList){
         return entityList.isEmpty()
-                    ? new Response(entity, null, "OK", 0) 
-                    : new Response(entity, entityList, "OK", 0);
+                    ? new Response(entity) 
+                    : new Response(entity, entityList);
      }
 }

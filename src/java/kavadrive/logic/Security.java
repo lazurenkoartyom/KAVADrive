@@ -20,6 +20,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.servlet.http.Cookie;
 import javax.ws.rs.core.MediaType;
+import kavadrive.classes.Message;
 import kavadrive.classes.Response;
 import kavadrive.classes.UserInfo;
 import kavadrive.dao.UsersDAO;
@@ -63,7 +64,7 @@ public class Security {
             return Response.OK;
         } catch (Exception ex) {
             //There is no UserInfo in current session
-            return new Response (null, "U r not logged in.", -1);
+            return new Response (Message.USER_IS_NOT_LOGGED_IN);
         }
     }
     
@@ -80,7 +81,7 @@ public class Security {
     public Response login(Users loggingInClient) {
         try {
             if(isClientLoggedIn()) {
-                return new Response(null, "U are already logged in.", -1);
+                return new Response(Message.USER_IS_LOGGED_IN);
             }
         
             String token = getTokenFromSession(request);
@@ -91,7 +92,7 @@ public class Security {
                 return loginByPhoneOrEmail(loggingInClient);
             }
         }catch (ServiceException ex) {
-                return new Response(null, ex.getMessage(), -1);
+                return new Response(Message.catchException(ex));
         }
     }
     
@@ -107,7 +108,7 @@ public class Security {
         
         if(users.isEmpty()) {
             clearToken();
-            return new Response(null, "Not found user with this token. Try to relogin.", -1);
+            return new Response(Message.INVALID_TOKEN);
         }
         Users loggingInUser = users.get(0);
         checkTokenExpireAndUpdateToken(loggingInUser);
@@ -172,24 +173,24 @@ public class Security {
         if (phone != null) {
             List<Users> users = UsersDAO.findByParameter(PHONE, phone);
             if(users.isEmpty()) {
-                return new Response(null, "A phone number is wrong.", -1);
+                return new Response(Message.INVALID_PHONE_NUMBER);
             }
             foundUser = users.get(0);
         } else if (email != null) {
             List<Users> users = UsersDAO.findByParameter(EMAIL, email);
             if(users.isEmpty()) {
-                return new Response(null, "A e-mail is wrong.", -1);
+                return new Response(Message.INVALID_EMAIL);
             }
             foundUser = users.get(0);
        } else {
             //User did not provide phone number or e-mail
-            return new Response(null, "You must provide a phone number or e-mail.", -1);
+            return new Response(Message.EMPTY_PHONE_NUMBER_AND_EMAIL);
         }
         
         //Checking password
         if (foundUser.getUserPassword()==null 
                 || (!foundUser.getUserPassword().equals(password))) {
-            return new Response(null, "Wrong user or password.", -1);
+            return new Response(Message.INVALID_USER_OR_PASSWORD);
         }
         
         //Checking secretCode
@@ -199,7 +200,7 @@ public class Security {
             setSessionAttribute(foundUser);
             return new Response(foundUser);
         }else{
-            return new Response(null, "Wrong registration code.", -2);
+            return new Response(Message.INVALID_ACTIVATION_CODE);
         }
     }
     
