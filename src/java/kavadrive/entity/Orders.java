@@ -72,7 +72,7 @@ public class Orders implements Serializable {
     @ManyToOne
     private Users userId;
     @JoinColumn(name = "store_id", referencedColumnName = "store_id")
-    @ManyToOne(optional = false, cascade = CascadeType.MERGE)
+    @ManyToOne(optional = false)//, cascade = CascadeType.MERGE)
     private Store storeId;
     @OneToMany(mappedBy = "orderId")
     private List<OrderSimpleItem> orderSimpleItemList;

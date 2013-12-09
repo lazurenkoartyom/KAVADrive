@@ -222,7 +222,7 @@ public class Security {
         }
         Users client = users.get(0);
         for (Role role : roles){
-            if(client.getRoleId().equals(role)){
+            if(client.getRoleId().getRoleId().intValue() == role.getRoleId().intValue()){
                 return true;
             }
         }
