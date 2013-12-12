@@ -6,6 +6,7 @@
 
 package kavadrive.dao;
 
+import kavadrive.classes.Criteria;
 import java.util.List;
 import kavadrive.entity.ProductItem;
 import kavadrive.classes.ServiceException;
@@ -61,9 +62,8 @@ public class ProductItemDAO extends AbstractDAO<ProductItem> {
     public static int count() throws ServiceException{
         return getCount(ENTITY_CLASS);
     }
-    
-    public static <E> List<ProductItem> findByParameter(Parameters name, E parameterValue) throws ServiceException{
-        String nameParameter = name.getName();
-        return getByParameter(ENTITY_CLASS, nameParameter, parameterValue);
+
+    public static List<ProductItem> findByCriterias(Criteria... criterias) throws ServiceException{
+         return getByCriterias(ENTITY_CLASS, criterias);
     }
 }

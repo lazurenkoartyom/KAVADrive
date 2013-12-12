@@ -23,6 +23,7 @@ import javax.ws.rs.core.MediaType;
 import kavadrive.classes.Message;
 import kavadrive.classes.Response;
 import kavadrive.classes.UserInfo;
+import kavadrive.classes.Criteria;
 import kavadrive.dao.UsersDAO;
 import static kavadrive.dao.UsersDAO.Parameters.*;
 import kavadrive.entity.Role;
@@ -61,10 +62,10 @@ public class Security {
             HttpSession session = request.getSession();
             clearToken();
             session.invalidate();
-            return Response.OK;
+            return Response.create();
         } catch (Exception ex) {
             //There is no UserInfo in current session
-            return new Response (Message.USER_IS_NOT_LOGGED_IN);
+            return Response.create(Message.USER_IS_NOT_LOGGED_IN);
         }
     }
     
@@ -81,7 +82,7 @@ public class Security {
     public Response login(Users loggingInClient) {
         try {
             if(isClientLoggedIn()) {
-                return new Response(Message.USER_IS_LOGGED_IN);
+                return Response.create(Message.USER_IS_LOGGED_IN);
             }
         
             String token = getTokenFromSession(request);
@@ -92,7 +93,7 @@ public class Security {
                 return loginByPhoneOrEmail(loggingInClient);
             }
         }catch (ServiceException ex) {
-                return new Response(Message.catchException(ex));
+                return Response.create(Message.catchException(ex));
         }
     }
     
@@ -104,16 +105,17 @@ public class Security {
     
     /************* Login by token ****************/
     private Response loginByToken(String token) throws ServiceException {
-        List<Users> users = UsersDAO.findByParameter(TOKEN, token);
+        Criteria crits = new Criteria(TOKEN.getName(),token);           
+        List<Users> users = UsersDAO.findByCriterias(crits);
         
         if(users.isEmpty()) {
             clearToken();
-            return new Response(Message.INVALID_TOKEN);
+            return Response.create(Message.INVALID_TOKEN);
         }
         Users loggingInUser = users.get(0);
         checkTokenExpireAndUpdateToken(loggingInUser);
         setSessionAttribute(loggingInUser);
-        return  new Response(loggingInUser);
+        return  Response.create(loggingInUser);
     }
 
     private void checkTokenExpireAndUpdateToken(Users user) throws ServiceException{
@@ -137,7 +139,8 @@ public class Security {
     }
     
     private boolean isExistingInDataBase(String token) throws ServiceException {
-        List<Users> users = UsersDAO.findByParameter(TOKEN, token);
+        Criteria crits = new Criteria(TOKEN.getName(),token);           
+        List<Users> users = UsersDAO.findByCriterias(crits);
         return !users.isEmpty();
     }
     
@@ -171,26 +174,28 @@ public class Security {
         //Checking phone and email and searching user in DB
         Users foundUser;
         if (phone != null) {
-            List<Users> users = UsersDAO.findByParameter(PHONE, phone);
+            Criteria crits = new Criteria(PHONE.getName(),phone);           
+            List<Users> users = UsersDAO.findByCriterias(crits);
             if(users.isEmpty()) {
-                return new Response(Message.INVALID_PHONE_NUMBER);
+                return Response.create(Message.INVALID_PHONE_NUMBER);
             }
             foundUser = users.get(0);
         } else if (email != null) {
-            List<Users> users = UsersDAO.findByParameter(EMAIL, email);
+            Criteria crits = new Criteria(EMAIL.getName(),email);           
+            List<Users> users = UsersDAO.findByCriterias(crits);
             if(users.isEmpty()) {
-                return new Response(Message.INVALID_EMAIL);
+                return Response.create(Message.INVALID_EMAIL);
             }
             foundUser = users.get(0);
        } else {
             //User did not provide phone number or e-mail
-            return new Response(Message.EMPTY_PHONE_NUMBER_AND_EMAIL);
+            return Response.create(Message.EMPTY_PHONE_NUMBER_AND_EMAIL);
         }
         
         //Checking password
         if (foundUser.getUserPassword()==null 
                 || (!foundUser.getUserPassword().equals(password))) {
-            return new Response(Message.INVALID_USER_OR_PASSWORD);
+            return Response.create(Message.INVALID_USER_OR_PASSWORD);
         }
         
         //Checking secretCode
@@ -198,9 +203,9 @@ public class Security {
                 || foundUser.getSecretCod().equals(secretCode)) {
             resetSecretCodAndChangeToken(foundUser);
             setSessionAttribute(foundUser);
-            return new Response(foundUser);
+            return Response.create(foundUser);
         }else{
-            return new Response(Message.INVALID_ACTIVATION_CODE);
+            return Response.create(Message.INVALID_ACTIVATION_CODE);
         }
     }
     
@@ -216,7 +221,8 @@ public class Security {
     }
     
     private static boolean isValidRole(String token,Role... roles) throws ServiceException{
-        List<Users> users = UsersDAO.findByParameter(TOKEN, token);
+        Criteria crits = new Criteria(TOKEN.getName(),token);           
+        List<Users> users = UsersDAO.findByCriterias(crits);
         if(users.isEmpty()) {
             return false;
         }

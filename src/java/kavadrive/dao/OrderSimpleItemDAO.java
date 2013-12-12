@@ -6,6 +6,7 @@
 
 package kavadrive.dao;
 
+import kavadrive.classes.Criteria;
 import java.util.List;
 import kavadrive.entity.OrderSimpleItem;
 import kavadrive.classes.ServiceException;
@@ -61,9 +62,8 @@ public class OrderSimpleItemDAO extends AbstractDAO<OrderSimpleItem> {
     public static int count() throws ServiceException{
         return getCount(ENTITY_CLASS);
     }
-    
-    public static <E> List<OrderSimpleItem> findByParameter(Parameters name, E parameterValue) throws ServiceException{
-        String nameParameter = name.getName();
-        return getByParameter(ENTITY_CLASS, nameParameter, parameterValue);
+
+    public static List<OrderSimpleItem> findByCriterias(Criteria... criterias) throws ServiceException{
+         return getByCriterias(ENTITY_CLASS, criterias);
     }
 }
