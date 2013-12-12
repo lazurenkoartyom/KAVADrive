@@ -19,6 +19,7 @@ import javax.ws.rs.core.MediaType;
 import kavadrive.classes.Message;
 import kavadrive.classes.Response;
 import kavadrive.classes.ServiceException;
+import kavadrive.classes.Criteria;
 import kavadrive.dao.UsersDAO;
 import static kavadrive.dao.UsersDAO.Parameters.*;
 import kavadrive.entity.Role;
@@ -47,25 +48,27 @@ public class UsersFacadeREST extends AbstractFacade<Users> {
     public Response create(Users entity) {
         try {
             if (!isCorrectEntity(entity)) {
-                return super.createResponse(Message.INVALID_DATA);
+                return Response.create(Message.INVALID_DATA);
             }
             entity.setRoleId(USER);
             entity.setSecretCod(generateSecurityCode());
             
             UsersDAO.create(entity);
-            return super.createResponse(entity);
+            return Response.create(entity);
         } catch (ServiceException e) {
             //Logger.getLogger(OrdersFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
-            return super.createResponse(Message.catchException(e));
+            return Response.create(Message.catchException(e));
         }
     }
 
     private boolean isCorrectEntity(Users entity) throws ServiceException {
+        Criteria critEmail = new Criteria(EMAIL.getName(),entity.getEmail());
+        Criteria critPhone = new Criteria(PHONE.getName(),entity.getUserPhone());
         return (entity.getUserName() != null)
                 &&  (entity.getUserPassword() != null)
                 &&  ((entity.getUserPhone()!= null) || (entity.getEmail() != null))
-                &&  (UsersDAO.findByParameter(PHONE, entity.getUserPhone()).isEmpty())
-                &&  (UsersDAO.findByParameter(EMAIL, entity.getEmail()).isEmpty());
+                &&  (UsersDAO.findByCriterias(critPhone).isEmpty())
+                &&  (UsersDAO.findByCriterias(critEmail).isEmpty());
     }
     
     private int generateSecurityCode() {
@@ -82,26 +85,27 @@ public class UsersFacadeREST extends AbstractFacade<Users> {
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response edit(Users entity) {
         try {
-            
+            Criteria critEmail = new Criteria(EMAIL.getName(),entity.getEmail());
+            Criteria critPhone = new Criteria(PHONE.getName(),entity.getUserPhone());
             Users oldUser = UsersDAO.find(entity.getUserId());
             if ((entity.getEmail() == null) && (entity.getUserPhone() == null)){
-                return super.createResponse(Message.EMPTY_PHONE_NUMBER_AND_EMAIL);
+                return Response.create(Message.EMPTY_PHONE_NUMBER_AND_EMAIL);
             }
             if ((entity.getUserPhone() != null) 
                     && !entity.getUserPhone().equals(oldUser.getUserPhone())
-                    && (!UsersDAO.findByParameter(PHONE, entity.getUserPhone()).isEmpty())) {
-                return super.createResponse(Message.EXISTING_PHONE_NUMBER);
+                    && (!UsersDAO.findByCriterias(critPhone).isEmpty())) {
+                return Response.create(Message.EXISTING_PHONE_NUMBER);
             }
             if ((entity.getEmail()!= null) 
                     && !entity.getEmail().equals(oldUser.getEmail())
-                    && (!UsersDAO.findByParameter(EMAIL,entity.getEmail()).isEmpty())) {
-                return super.createResponse(Message.EXISTING_EMAIL);
+                    && (!UsersDAO.findByCriterias(critEmail).isEmpty())) {
+                return Response.create(Message.EXISTING_EMAIL);
             }
             
-            if (oldUser.getRoleId() != entity.getRoleId()) {
+            if (oldUser.getRoleId().getRoleId().intValue() != entity.getRoleId().getRoleId().intValue()) {
                if(!Security.checkClientRole(request,ADMINISTRATOR)){
                     entity.setRoleId(oldUser.getRoleId());
-                    return super.createResponse(Message.INVALID_ROLE);
+                    return Response.create(Message.INVALID_ROLE);
                 }
             }
 
@@ -113,10 +117,10 @@ public class UsersFacadeREST extends AbstractFacade<Users> {
             }
             
             UsersDAO.edit(entity);
-            return super.createResponse(entity);
+            return Response.create(entity);
         } catch (ServiceException e) {
             //Logger.getLogger(OrdersFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
-            return super.createResponse(Message.catchException(e));
+            return Response.create(Message.catchException(e));
         }
     }
 
@@ -127,15 +131,15 @@ public class UsersFacadeREST extends AbstractFacade<Users> {
     public Response remove(@PathParam("id") Integer id) {
         try {
             if(!Security.checkClientRole(request,ADMINISTRATOR)){
-                 return new Response(Message.INVALID_ROLE);
+                 return Response.create(Message.INVALID_ROLE);
             }
 
             Users entity = UsersDAO.find(id);
             UsersDAO.remove(entity);
-            return super.createResponse();
+            return Response.create();
         } catch (ServiceException e) {
             //Logger.getLogger(OrdersFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
-            return super.createResponse(Message.catchException(e));
+            return Response.create(Message.catchException(e));
         }
     }
 
@@ -146,14 +150,14 @@ public class UsersFacadeREST extends AbstractFacade<Users> {
     public Response find(@PathParam("id") Integer id) {
         try {
             if(!Security.checkClientRole(request,ADMINISTRATOR)){
-                 return new Response(Message.INVALID_ROLE);
+                 return Response.create(Message.INVALID_ROLE);
             }
 
             Users entity = UsersDAO.find(id);
-            return super.createResponse(entity);
+            return Response.create(entity);
         } catch (ServiceException e) {
             //Logger.getLogger(OrdersFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
-            return super.createResponse(Message.catchException(e));
+            return Response.create(Message.catchException(e));
         }
     }
 
@@ -163,14 +167,14 @@ public class UsersFacadeREST extends AbstractFacade<Users> {
     public Response findAll() {
         try {
             if(!Security.checkClientRole(request,ADMINISTRATOR)){
-                 return new Response(Message.INVALID_ROLE);
+                 return Response.create(Message.INVALID_ROLE);
             }
 
             List<Users> entityList = UsersDAO.findAll();
-            return super.createResponse(entityList);
+            return Response.create(entityList);
         } catch (ServiceException e) {
             //Logger.getLogger(OrdersFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
-            return super.createResponse(Message.catchException(e));
+            return Response.create(Message.catchException(e));
         }
     }
 
@@ -181,14 +185,14 @@ public class UsersFacadeREST extends AbstractFacade<Users> {
     public Response findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
         try {
             if(!Security.checkClientRole(request,ADMINISTRATOR)){
-                 return new Response(Message.INVALID_ROLE);
+                 return Response.create(Message.INVALID_ROLE);
             }
 
             List<Users> entityList = UsersDAO.findRange(new int[]{from, to});
-            return super.createResponse(entityList);
+            return Response.create(entityList);
         } catch (ServiceException e) {
             //Logger.getLogger(OrdersFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
-            return super.createResponse(Message.catchException(e));
+            return Response.create(Message.catchException(e));
         }
     }
 
@@ -199,14 +203,14 @@ public class UsersFacadeREST extends AbstractFacade<Users> {
     public Response count() {
         try {
             if(!Security.checkClientRole(request,ADMINISTRATOR)){
-                 return new Response(Message.INVALID_ROLE);
+                 return Response.create(Message.INVALID_ROLE);
             }
 
             int count = UsersDAO.count();
-            return super.createResponse(count);
+            return Response.create(count);
         } catch (ServiceException e) {
             //Logger.getLogger(OrdersFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
-            return super.createResponse(Message.catchException(e));
+            return Response.create(Message.catchException(e));
         }
     }    
 }

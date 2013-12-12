@@ -6,6 +6,7 @@
 
 package kavadrive.dao;
 
+import kavadrive.classes.Criteria;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -14,6 +15,7 @@ import javax.persistence.Persistence;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import kavadrive.classes.ServiceException;
 
@@ -166,21 +168,27 @@ public abstract class AbstractDAO<T> {
         }
     }
     
-    protected static <T,E> List<T> getByParameter(Class entityClass, 
-            String parameterName, E parameterValue) throws ServiceException {
+    protected static <T> List<T> getByCriterias(Class entityClass, 
+            Criteria... crits) throws ServiceException {
         
         EntityManager em = null;
-        try { 
+        try {
             em = getEntityManager();
             CriteriaBuilder cb = em.getCriteriaBuilder();
             CriteriaQuery cq = cb.createQuery();
             Root e = cq.from(entityClass);
-            cq.where(cb.equal(e.get(parameterName),parameterValue));
+            
+            Predicate[] predicate =  new Predicate[crits.length];
+            for(int i=0; i < predicate.length; i++){
+                predicate[i] = cb.equal(e.get(crits[i].getName()),crits[i].getValue()); 
+            }
+            cq.where(cb.and(predicate)); 
+            
             Query query = em.createQuery(cq);
             List<T> list = query.getResultList();
             return list;
         } catch (Exception e) {
-            throw new ServiceException(e.getMessage());
+            throw new ServiceException(e);
         } finally {
             if ((em != null) && em.isOpen()) {
                 em.close();

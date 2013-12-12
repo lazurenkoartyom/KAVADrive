@@ -35,10 +35,10 @@ public class RoleFacadeREST extends AbstractFacade<Role> {
     public  Response create(Role entity) {
         try {
             RoleDAO.create(entity);
-            return super.createResponse(entity);
+            return Response.create(entity);
         } catch (ServiceException e) {
             //Logger.getLogger(OrdersFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
-            return super.createResponse(Message.catchException(e));
+            return Response.create(Message.catchException(e));
         }
     }
 
@@ -49,10 +49,10 @@ public class RoleFacadeREST extends AbstractFacade<Role> {
     public Response edit(Role entity) {
         try {
             RoleDAO.edit(entity);
-            return super.createResponse(entity);
+            return Response.create(entity);
         } catch (ServiceException e) {
             //Logger.getLogger(OrdersFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
-            return super.createResponse(Message.catchException(e));
+            return Response.create(Message.catchException(e));
         }
     }
 
@@ -64,10 +64,10 @@ public class RoleFacadeREST extends AbstractFacade<Role> {
         try {
             Role entity = RoleDAO.find(id);
             RoleDAO.remove(entity);
-            return super.createResponse();
+            return Response.create();
         } catch (ServiceException e) {
             //Logger.getLogger(OrdersFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
-            return super.createResponse(Message.catchException(e));
+            return Response.create(Message.catchException(e));
         }
     }
 
@@ -78,10 +78,10 @@ public class RoleFacadeREST extends AbstractFacade<Role> {
     public Response find(@PathParam("id") Integer id) {
         try {
             Role entity = RoleDAO.find(id);
-            return super.createResponse(entity);
+            return Response.create(entity);
         } catch (ServiceException e) {
             //Logger.getLogger(OrdersFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
-            return super.createResponse(Message.catchException(e));
+            return Response.create(Message.catchException(e));
         }
     }
 
@@ -91,10 +91,10 @@ public class RoleFacadeREST extends AbstractFacade<Role> {
     public Response findAll() {
         try {
             List<Role> entityList = RoleDAO.findAll();
-            return super.createResponse(entityList);
+            return Response.create(entityList);
         } catch (ServiceException e) {
             //Logger.getLogger(OrdersFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
-            return super.createResponse(Message.catchException(e));
+            return Response.create(Message.catchException(e));
         }
     }
 
@@ -105,10 +105,10 @@ public class RoleFacadeREST extends AbstractFacade<Role> {
     public Response findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
         try {
             List<Role> entityList = RoleDAO.findRange(new int[]{from, to});
-            return super.createResponse(entityList);
+            return Response.create(entityList);
         } catch (ServiceException e) {
             //Logger.getLogger(OrdersFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
-            return super.createResponse(Message.catchException(e));
+            return Response.create(Message.catchException(e));
         }
     }
 
@@ -119,10 +119,10 @@ public class RoleFacadeREST extends AbstractFacade<Role> {
     public Response count() {
         try {
             int count = RoleDAO.count();
-            return super.createResponse(count);
+            return Response.create(count);
         } catch (ServiceException e) {
             //Logger.getLogger(OrdersFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
-            return super.createResponse(Message.catchException(e));
+            return Response.create(Message.catchException(e));
         }
     }
 }

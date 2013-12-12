@@ -28,6 +28,7 @@ public class ApplicationConfig extends Application {
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
         resources.add(kavadrive.logic.Security.class);
+        resources.add(kavadrive.logic.StoreService.class);
         resources.add(kavadrive.service.CategoryFacadeREST.class);
         resources.add(kavadrive.service.OrderItemFacadeREST.class);
         resources.add(kavadrive.service.OrderSimpleItemFacadeREST.class);
