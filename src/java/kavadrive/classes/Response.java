@@ -24,6 +24,7 @@ import kavadrive.entity.ProductSetList;
 import kavadrive.entity.Role;
 import kavadrive.entity.Store;
 import kavadrive.entity.Users;
+import kavadrive.logic.StoreServiceOrdersList;
 
 /**
  * Class, userd to response to requests. Contains resulting object, 
@@ -61,6 +62,7 @@ public class Response<T> implements Serializable {
         @XmlElement(name="Store",           type = Store.class),
         @XmlElement(name="Users",           type = Users.class),
         @XmlElement(name="Count",           type = Integer.class),
+        @XmlElement(name="ShopOrders",      type = StoreServiceOrdersList.class),
     })
     private T entity ;
     
@@ -108,4 +110,32 @@ public class Response<T> implements Serializable {
         this.entity = entity;
         this.entityList = entityList;
     }
+    
+    public static Response create(){
+        return Response.OK;
+    }
+    
+    public static Response create(Message message){
+        return new Response(message);
+    }   
+    
+    public static Response create(int count){
+        return new Response(count);
+    }
+    
+    public static <T> Response create(T entity){
+        return  new Response(entity);
+    }
+    
+    public static <T> Response create(List<T> entityList){
+         return entityList.isEmpty()
+                    ? new Response(Message.NOT_FOUND_IN_DB) 
+                    : new Response(entityList);
+    }
+    
+    public static <T,E> Response create(T entity, List<E> entityList){
+        return entityList.isEmpty()
+                    ? new Response(entity) 
+                    : new Response(entity, entityList);
+     }
 }

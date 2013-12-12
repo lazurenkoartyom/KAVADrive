@@ -9,10 +9,14 @@ package kavadrive.classes;
  * @author Aleksey Dziuniak
  */
 public class ServiceException extends Exception {
-    private String Message;
+    private String message;
 
-    public ServiceException(String Message) {
-        this.Message = Message;
+    public ServiceException(Exception ex) {
+        this.message = ex.getMessage();
+    }
+    
+    public ServiceException(String message) {
+        this.message = message;
     }
 
     /**
@@ -20,7 +24,7 @@ public class ServiceException extends Exception {
      */
     @Override
     public String getMessage() {
-        return Message;
+        return message;
     }
     
 }

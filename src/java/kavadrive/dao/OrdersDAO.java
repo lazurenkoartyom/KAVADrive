@@ -6,9 +6,12 @@
 
 package kavadrive.dao;
 
+import kavadrive.classes.Criteria;
+import java.util.ArrayList;
 import java.util.List;
 import kavadrive.entity.Orders;
 import kavadrive.classes.ServiceException;
+import kavadrive.entity.OrderItem;
 
 /**
  *
@@ -18,16 +21,18 @@ public class OrdersDAO  extends AbstractDAO<Orders> {
 
     private final static Class<Orders> ENTITY_CLASS = Orders.class;
     
-    private static class OrderStatus {
-        final static String NEW = "NEW";
-        final static String PROCEEDING = "PROCEEDING";
-        final static String CLOSED = "CLOSED";
-        final static String CANCELED = "CANCELED";
+    public static class Status {
+        public final static String NEW = "NEW";
+        public final static String ACCEPTED = "ACCEPT";
+        public final static String COMPLETED = "COMPLETE";
+        public final static String CANCELLED = "CANCEL";
     }
 
     public enum Parameters {
         ID("orderId"),
-        USER("userId");
+        USER("userId"),
+        STORE("storeId"),
+        STATUS("status");
     
         private final String name;
         private Parameters(String name){
@@ -43,7 +48,7 @@ public class OrdersDAO  extends AbstractDAO<Orders> {
     }
     
     public static void create(Orders order) throws ServiceException{
-        order.setStatus(OrderStatus.NEW);
+        order.setStatus(Status.NEW);
         add(order);
     }
     
@@ -71,8 +76,34 @@ public class OrdersDAO  extends AbstractDAO<Orders> {
         return getCount(ENTITY_CLASS);
     }
     
-    public static <E> List<Orders> findByParameter(Parameters name, E parameterValue) throws ServiceException{
-        String nameParameter = name.getName();
-        return getByParameter(ENTITY_CLASS, nameParameter, parameterValue);
+    public static <E> List<Orders> findByCriterias(Criteria... criterias) throws ServiceException{
+         return getByCriterias(ENTITY_CLASS, criterias);
     }
+    
+    public static List<Orders> clearParameters(List<Orders> list, OrdersDAO.Parameters... names) throws ServiceException{
+        for(OrdersDAO.Parameters param : names){
+            setParameterInEntityList(list, param, null);
+        }
+        return list;
+    }
+
+    public static void setParameterInEntityList(List<Orders> list, Parameters param, String value) throws ServiceException {
+        for(Orders item : list){
+            switch(param){
+                case STATUS: item.setStatus(value);
+                    edit(item);
+                    break;
+            }
+        }
+    }
+    
+    public static List<Orders> getOrdersByListIds(List<Integer> ids) throws ServiceException{
+        List<Orders> orders = new ArrayList();
+        for (Integer id : ids){
+            Orders order = find(id);
+            orders.add(order);
+        }
+        return orders;
+    }
+            
 }

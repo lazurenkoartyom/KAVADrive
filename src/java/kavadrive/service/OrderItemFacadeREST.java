@@ -15,13 +15,12 @@ import javax.ws.rs.core.MediaType;
 import kavadrive.classes.Message;
 import kavadrive.classes.Response;
 import kavadrive.classes.ServiceException;
+import kavadrive.classes.Criteria;
 import kavadrive.dao.OrderItemDAO;
 import kavadrive.dao.OrdersDAO;
 import static kavadrive.dao.OrderItemDAO.Parameters.*;
-import kavadrive.dao.UsersDAO;
 import kavadrive.entity.OrderItem;
 import kavadrive.entity.Orders;
-import kavadrive.entity.Users;
 
 /**
  *
@@ -39,10 +38,10 @@ public class OrderItemFacadeREST extends AbstractFacade<OrderItem>  {
     public Response create(OrderItem entity) {
         try {
             OrderItemDAO.create(entity);
-            return super.createResponse(entity);
+            return Response.create(entity);
         } catch (ServiceException e) {
             //Logger.getLogger(OrdersFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
-            return super.createResponse(Message.catchException(e));
+            return Response.create(Message.catchException(e));
         }
     }
 
@@ -53,10 +52,10 @@ public class OrderItemFacadeREST extends AbstractFacade<OrderItem>  {
     public Response edit(OrderItem entity) {
         try {
             OrderItemDAO.edit(entity);
-            return super.createResponse(entity);
+            return Response.create(entity);
         } catch (ServiceException e) {
             //Logger.getLogger(OrdersFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
-            return super.createResponse(Message.catchException(e));
+            return Response.create(Message.catchException(e));
         }
     }
 
@@ -68,10 +67,10 @@ public class OrderItemFacadeREST extends AbstractFacade<OrderItem>  {
         try {
             OrderItem entity = OrderItemDAO.find(id);
             OrderItemDAO.remove(entity);
-            return super.createResponse();
+            return Response.create();
         } catch (ServiceException e) {
             //Logger.getLogger(OrdersFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
-            return super.createResponse(Message.catchException(e));
+            return Response.create(Message.catchException(e));
         }
     }
 
@@ -82,10 +81,10 @@ public class OrderItemFacadeREST extends AbstractFacade<OrderItem>  {
     public Response find(@PathParam("id") Integer id) {
         try {
             OrderItem entity = OrderItemDAO.find(id);
-            return super.createResponse(entity);
+            return Response.create(entity);
         } catch (ServiceException e) {
             //Logger.getLogger(OrdersFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
-            return super.createResponse(Message.catchException(e));
+            return Response.create(Message.catchException(e));
         }
     }
 
@@ -95,10 +94,10 @@ public class OrderItemFacadeREST extends AbstractFacade<OrderItem>  {
     public Response findAll() {
         try {
             List<OrderItem> entityList = OrderItemDAO.findAll();
-            return super.createResponse(entityList);
+            return Response.create(entityList);
         } catch (ServiceException e) {
             //Logger.getLogger(OrdersFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
-            return super.createResponse(Message.catchException(e));
+            return Response.create(Message.catchException(e));
         }
     }
 
@@ -109,10 +108,10 @@ public class OrderItemFacadeREST extends AbstractFacade<OrderItem>  {
     public Response findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
         try {
             List<OrderItem> entityList = OrderItemDAO.findRange(new int[]{from, to});
-            return super.createResponse(entityList);
+            return Response.create(entityList);
         } catch (ServiceException e) {
             //Logger.getLogger(OrdersFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
-            return super.createResponse(Message.catchException(e));
+            return Response.create(Message.catchException(e));
         }
     }
 
@@ -123,10 +122,10 @@ public class OrderItemFacadeREST extends AbstractFacade<OrderItem>  {
     public Response count() {
         try {
             int count = OrderItemDAO.count();
-            return super.createResponse(count);
+            return Response.create(count);
         } catch (ServiceException e) {
             //Logger.getLogger(OrdersFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
-            return super.createResponse(Message.catchException(e));
+            return Response.create(Message.catchException(e));
         }
     }
     
@@ -136,12 +135,13 @@ public class OrderItemFacadeREST extends AbstractFacade<OrderItem>  {
     public Response findByOrder(@PathParam("id") Integer id) {
         try {
             Orders order = OrdersDAO.find(id);
-            List<OrderItem> found = OrderItemDAO.findByParameter(ORDER, order);
+            Criteria crits = new Criteria(ORDER.getName(),order);           
+            List<OrderItem> found = OrderItemDAO.findByCriterias(crits);
             OrderItemDAO.clearParameters(found,ORDER);
-            return super.createResponse(order, found);
+            return Response.create(order, found);
         } catch (ServiceException e) {
             //Logger.getLogger(OrdersFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
-            return super.createResponse(Message.catchException(e));
+            return Response.create(Message.catchException(e));
         }
     }
 }

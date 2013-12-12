@@ -35,10 +35,10 @@ public class ProductSetListFacadeREST extends AbstractFacade<ProductSetList> {
     public  Response create(ProductSetList entity) {
         try {
             ProductSetListDAO.create(entity);
-            return super.createResponse(entity);
+            return Response.create(entity);
         } catch (ServiceException e) {
             //Logger.getLogger(OrdersFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
-            return super.createResponse(Message.catchException(e));
+            return Response.create(Message.catchException(e));
         }
     }
 
@@ -49,10 +49,10 @@ public class ProductSetListFacadeREST extends AbstractFacade<ProductSetList> {
     public Response edit(ProductSetList entity) {
         try {
             ProductSetListDAO.edit(entity);
-            return super.createResponse(entity);
+            return Response.create(entity);
         } catch (ServiceException e) {
             //Logger.getLogger(OrdersFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
-            return super.createResponse(Message.catchException(e));
+            return Response.create(Message.catchException(e));
         }
     }
 
@@ -64,10 +64,10 @@ public class ProductSetListFacadeREST extends AbstractFacade<ProductSetList> {
         try {
             ProductSetList entity = ProductSetListDAO.find(id);
             ProductSetListDAO.remove(entity);
-            return super.createResponse();
+            return Response.create();
         } catch (ServiceException e) {
             //Logger.getLogger(OrdersFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
-            return super.createResponse(Message.catchException(e));
+            return Response.create(Message.catchException(e));
         }
     }
 
@@ -78,10 +78,10 @@ public class ProductSetListFacadeREST extends AbstractFacade<ProductSetList> {
     public Response find(@PathParam("id") Integer id) {
         try {
             ProductSetList entity = ProductSetListDAO.find(id);
-            return super.createResponse(entity);
+            return Response.create(entity);
         } catch (ServiceException e) {
             //Logger.getLogger(OrdersFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
-            return super.createResponse(Message.catchException(e));
+            return Response.create(Message.catchException(e));
         }
     }
 
@@ -91,10 +91,10 @@ public class ProductSetListFacadeREST extends AbstractFacade<ProductSetList> {
     public Response findAll() {
         try {
             List<ProductSetList> entityList = ProductSetListDAO.findAll();
-            return super.createResponse(entityList);
+            return Response.create(entityList);
         } catch (ServiceException e) {
             //Logger.getLogger(OrdersFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
-            return super.createResponse(Message.catchException(e));
+            return Response.create(Message.catchException(e));
         }
     }
 
@@ -105,10 +105,10 @@ public class ProductSetListFacadeREST extends AbstractFacade<ProductSetList> {
     public Response findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
         try {
             List<ProductSetList> entityList = ProductSetListDAO.findRange(new int[]{from, to});
-            return super.createResponse(entityList);
+            return Response.create(entityList);
         } catch (ServiceException e) {
             //Logger.getLogger(OrdersFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
-            return super.createResponse(Message.catchException(e));
+            return Response.create(Message.catchException(e));
         }
     }
 
@@ -119,10 +119,10 @@ public class ProductSetListFacadeREST extends AbstractFacade<ProductSetList> {
     public Response count() {
         try {
             int count = ProductSetListDAO.count();
-            return super.createResponse(count);
+            return Response.create(count);
         } catch (ServiceException e) {
             //Logger.getLogger(OrdersFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
-            return super.createResponse(Message.catchException(e));
+            return Response.create(Message.catchException(e));
         }
     }
 }

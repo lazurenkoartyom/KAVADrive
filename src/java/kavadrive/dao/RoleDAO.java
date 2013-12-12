@@ -6,9 +6,12 @@
 
 package kavadrive.dao;
 
+import kavadrive.classes.Criteria;
 import java.util.List;
 import kavadrive.entity.Role;
 import kavadrive.classes.ServiceException;
+import static kavadrive.dao.AbstractDAO.getByCriterias;
+import kavadrive.entity.Category;
 
 /**
  *
@@ -61,9 +64,8 @@ public class RoleDAO extends AbstractDAO<Role> {
     public static int count() throws ServiceException{
         return getCount(ENTITY_CLASS);
     }
-    
-    public static <E> List<Role> findByParameter(Parameters name, E parameterValue) throws ServiceException{
-        String nameParameter = name.getName();
-        return getByParameter(ENTITY_CLASS, nameParameter, parameterValue);
-    }
+
+    public static List<Role> findByCriterias(Criteria... criterias) throws ServiceException{
+         return getByCriterias(ENTITY_CLASS, criterias);
+    }   
 }
