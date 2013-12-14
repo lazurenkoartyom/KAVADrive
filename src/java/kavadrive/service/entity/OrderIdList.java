@@ -1,4 +1,4 @@
-package kavadrive.shopentity;
+package kavadrive.service.entity;
 
 import java.util.ArrayList;
 import java.util.List;

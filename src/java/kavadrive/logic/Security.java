@@ -19,14 +19,19 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.servlet.http.Cookie;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 import kavadrive.classes.Message;
 import kavadrive.classes.Response;
 import kavadrive.classes.UserInfo;
 import kavadrive.classes.Criteria;
+import kavadrive.dao.OrdersDAO;
+import kavadrive.dao.StoreDAO;
 import kavadrive.dao.UsersDAO;
 import static kavadrive.dao.UsersDAO.Parameters.*;
+import kavadrive.entity.Orders;
 import kavadrive.entity.Role;
+import kavadrive.entity.Store;
 import kavadrive.entity.Users;
 
 /**

@@ -20,7 +20,8 @@ public class ProductItemDAO extends AbstractDAO<ProductItem> {
     private final static Class<ProductItem> ENTITY_CLASS = ProductItem.class;
     
     public enum Parameters {
-        ID("id");
+        ID("id"),
+        PRODUCT_ITEM_ID("productItemId");
     
         private final String name;
         private Parameters(String name){

@@ -24,7 +24,7 @@ import kavadrive.entity.ProductSetList;
 import kavadrive.entity.Role;
 import kavadrive.entity.Store;
 import kavadrive.entity.Users;
-import kavadrive.logic.StoreServiceOrdersList;
+import kavadrive.service.entity.StoreServiceOrdersList;
 
 /**
  * Class, userd to response to requests. Contains resulting object, 

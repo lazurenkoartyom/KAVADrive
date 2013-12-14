@@ -6,6 +6,8 @@
 
 package kavadrive.logic;
 
+import kavadrive.service.entity.OrderIdList;
+import kavadrive.service.entity.StoreServiceOrdersList;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -24,7 +26,6 @@ import kavadrive.classes.Criteria;
 import kavadrive.dao.StoreDAO;
 import kavadrive.entity.Orders;
 import kavadrive.entity.Store;
-import kavadrive.shopentity.OrderIdList;
 
 /**
  *
@@ -33,18 +34,19 @@ import kavadrive.shopentity.OrderIdList;
 @Path("store_service")
 public class StoreService {
     
-    public StoreService() {
+    public StoreService(){
+        
     }
     
     @GET
-    @Produces(MediaType.APPLICATION_XML)
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response common(){
         return Response.EMPTY;
     }
+    
     @GET
     @Path("{store_id}/accepted")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response getListAcceptedOrders(@PathParam("store_id") Integer storeId) {
        
         try {
@@ -56,13 +58,12 @@ public class StoreService {
             
             List<Orders> orders = OrdersDAO.findByCriterias(crits);
             
-            StoreServiceOrdersList shopOrders = new StoreServiceOrdersList(storeId,orders);
+            StoreServiceOrdersList shopOrders = new StoreServiceOrdersList(store,orders);
             return Response.create(shopOrders);
         } catch (ServiceException e) {
             //Logger.getLogger(OrdersFacadeREST.class.getName()).log(Level.SEVERE, null, e);        
             return Response.create(Message.catchException(e));
         } 
-        
     }
     
     @POST
